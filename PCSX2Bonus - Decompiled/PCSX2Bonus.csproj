@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <ProjectType>local</ProjectType>
+    <ProjectVersion>7.10.377</ProjectVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7A052D20-B1F6-4646-A049-CBE5E5EEA79A}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <AssemblyName>PCSX2Bonus</AssemblyName>
+    <OutputType>WinExe</OutputType>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="HtmlAgilityPack" />
+    <Reference Include="Microsoft.DirectX.DirectInput" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Global.cs" />
+    <Compile Include="PCSX2Bonus\PortableSettingsProvider.cs" />
+    <Compile Include="PCSX2Bonus\XmlSerialization\TimeSpan.cs" />
+    <Compile Include="ColorPicker\BindOnEnterTextBox.cs" />
+    <Compile Include="ColorPicker\ColorComboBox.cs" />
+    <Compile Include="ColorPicker\DoubleToIntegerStringConverter.cs" />
+    <Compile Include="ColorPicker\ColorPicker.cs" />
+    <Compile Include="ColorPicker\ColorSlider.cs" />
+    <Compile Include="ColorPicker\ColorToStringConverter.cs" />
+    <Compile Include="ColorPicker\ColorNames.cs" />
+    <Compile Include="ColorPicker\ColorUtils.cs" />
+    <Compile Include="ColorPicker\HueToColorConverter.cs" />
+    <Compile Include="ColorPicker\HsvControl.cs" />
+    <Compile Include="ColorPicker\SpectrumSlider.cs" />
+    <Compile Include="PCSX2Bonus\Commands.cs" />
+    <Compile Include="PCSX2Bonus\CompatibilityConverter.cs" />
+    <Compile Include="PCSX2Bonus\BrushToColorConverter.cs" />
+    <Compile Include="PCSX2Bonus\ColorToBrushConverter.cs" />
+    <Compile Include="PCSX2Bonus\SafeBitmapConverter.cs" />
+    <Compile Include="PCSX2Bonus\FullscreenBitmapConverter.cs" />
+    <Compile Include="PCSX2Bonus\ScoreToColorConverter.cs" />
+    <Compile Include="PCSX2Bonus\InverseBoolToVisibilityConverter.cs" />
+    <Compile Include="PCSX2Bonus\BoolToVisibilityConverter.cs" />
+    <Compile Include="PCSX2Bonus\EditableTheme.cs" />
+    <Compile Include="PCSX2Bonus\Extensions.cs" />
+    <Compile Include="PCSX2Bonus\GameData.cs" />
+    <Compile Include="PCSX2Bonus\GameManager.cs" />
+    <Compile Include="Wpf\Util\GridViewSort.cs" />
+    <Compile Include="PCSX2Bonus\Gamepad.cs" />
+    <Compile Include="PCSX2Bonus\wndAbout.cs" />
+    <Compile Include="PCSX2Bonus\wndErrorReport.cs" />
+    <Compile Include="PCSX2Bonus\wndExecutableSelection.cs" />
+    <Compile Include="PCSX2Bonus\wndGameNotify.cs" />
+    <Compile Include="PCSX2Bonus\wndSettings.cs" />
+    <Compile Include="PCSX2Bonus\wndShaderConfig.cs" />
+    <Compile Include="PCSX2Bonus\ImageButton.cs" />
+    <Compile Include="PCSX2Bonus\ButtonState.cs" />
+    <Compile Include="PCSX2Bonus\ImageSizes.cs" />
+    <Compile Include="PCSX2Bonus\IniFile.cs" />
+    <Compile Include="LevenshteinDistance.cs" />
+    <Compile Include="PCSX2Bonus\LiveDateTime.cs" />
+    <Compile Include="ListViewCustomView\PlainView.cs" />
+    <Compile Include="PCSX2Bonus\Properties\Resources.cs" />
+    <Compile Include="PCSX2Bonus\RelayCommand!1.cs" />
+    <Compile Include="RuntimePolicyHelper.cs" />
+    <Compile Include="PCSX2Bonus\SaveState.cs" />
+    <Compile Include="PCSX2Bonus\SerialFinder.cs" />
+    <Compile Include="PCSX2Bonus\Toaster.cs" />
+    <Compile Include="PCSX2Bonus\Tools.cs" />
+    <Compile Include="PCSX2Bonus\MessageType.cs" />
+    <Compile Include="PCSX2Bonus\UserSettings.cs" />
+    <Compile Include="PCSX2Bonus\UserStyles.cs" />
+    <Compile Include="PCSX2Bonus\DefaultStyles.cs" />
+    <Compile Include="PCSX2Bonus\Variables.cs" />
+    <Compile Include="Wpf\Tile\VirtualizingTilePanel.cs" />
+    <Compile Include="PCSX2Bonus\wndFullScreen.cs" />
+    <Compile Include="PCSX2Bonus\wndScreenshots.cs" />
+    <Compile Include="PCSX2Bonus\wndGenerateExecutable.cs" />
+    <Compile Include="PCSX2Bonus\wndSetup.cs" />
+    <Compile Include="PCSX2Bonus\wndCustomConfig.cs" />
+    <Compile Include="PCSX2Bonus\Bios.cs" />
+    <Compile Include="PCSX2Bonus\wndMemCard.cs" />
+    <Compile Include="PCSX2Bonus\MemoryCard.cs" />
+    <Compile Include="PCSX2Bonus\wndThemeEditor.cs" />
+    <Compile Include="PCSX2Bonus\DummyGame.cs" />
+    <Compile Include="PCSX2Bonus\App.cs" />
+    <Compile Include="PCSX2Bonus\Game.cs" />
+    <Compile Include="PCSX2Bonus\GameSearchResult.cs" />
+    <Compile Include="PCSX2Bonus\MainWindow.cs" />
+    <Compile Include="PCSX2Bonus\Properties\Settings.cs" />
+    <Compile Include="XamlGeneratedNamespace\GeneratedInternalTypeHelper.cs" />
+    <Compile Include="SmartAssembly\AssemblyResolver\AssemblyResolver.cs" />
+    <Compile Include="SmartAssembly\AssemblyResolver\AssemblyResolverHelper.cs" />
+    <Compile Include="SmartAssembly\Attributes\ObfuscateControlFlowAttribute.cs" />
+    <Compile Include="SmartAssembly\MemoryManagement\MemoryManager.cs" />
+    <Compile Include="SmartAssembly\ResourceResolver\ResourceResolver.cs" />
+    <Compile Include="5e96321c-a6cd-401d-8685-da1a806c4484\879bc93d-181a-4bc9-b9ae-9b0276b56aff.cs" />
+    <Compile Include="SmartAssembly\Zip\DoNotEncodeStringsAttribute.cs" />
+    <Compile Include="SmartAssembly\Zip\SimpleZip.cs" />
+    <Compile Include="SmartAssembly\Attributes\PoweredByAttribute.cs" />
+    <EmbeddedResource Include="{5afba4e7-4cbd-48f4-ae87-5cb4a100aac0}" />
+    <EmbeddedResource Include="{22a11d39-8946-4a47-958b-a3b1fb426f2d}" />
+  </ItemGroup>
+</Project>
