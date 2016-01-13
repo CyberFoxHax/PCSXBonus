@@ -1,4 +1,4 @@
-﻿namespace PCSX2Bonus
+﻿namespace PCSX2Bonus.PCSX2Bonus
 {
 	internal sealed class GameData
     {

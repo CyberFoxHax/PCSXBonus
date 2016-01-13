@@ -1,10 +1,10 @@
-﻿namespace PCSX2Bonus
-{
-	using System.Windows;
-    using System.Windows.Controls.Primitives;
-    using System.Windows.Media;
+﻿using System.Windows;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 
-    public sealed class ImageButton : ToggleButton
+namespace PCSX2Bonus.PCSX2Bonus
+{
+	public sealed class ImageButton : ToggleButton
     {
         public static readonly DependencyProperty ImageProperty = DependencyProperty.Register("Image", typeof(ImageSource), typeof(ImageButton), new PropertyMetadata(null));
         public static readonly DependencyProperty MouseOverColorProperty = DependencyProperty.Register("MouseOverColor", typeof(SolidColorBrush), typeof(ImageButton), new PropertyMetadata(null));

@@ -1,10 +1,9 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
 
-namespace PCSX2Bonus {
-	using System.Collections.Generic;
-	using System.Runtime.InteropServices;
-	using System.Text;
-
+namespace PCSX2Bonus.PCSX2Bonus {
 	public sealed class IniFile {
 		public string path;
 

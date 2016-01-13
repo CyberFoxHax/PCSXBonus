@@ -1,12 +1,12 @@
-﻿namespace PCSX2Bonus {
-	using Microsoft.DirectX.DirectInput;
-	using System;
-	using System.Collections;
-	using System.Threading;
-	using System.Threading.Tasks;
-	using System.Windows;
-	using System.Windows.Interop;
+﻿using System;
+using System.Collections;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Interop;
+using Microsoft.DirectX.DirectInput;
 
+namespace PCSX2Bonus.PCSX2Bonus {
 	internal sealed class Gamepad {
 		private Device _joystick;
 		private CancellationTokenSource cts = new CancellationTokenSource();

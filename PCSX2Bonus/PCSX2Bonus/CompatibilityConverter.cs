@@ -1,10 +1,10 @@
-﻿namespace PCSX2Bonus
-{
-    using System;
-    using System.Globalization;
-    using System.Windows.Data;
+﻿using System;
+using System.Globalization;
+using System.Windows.Data;
 
-    internal sealed class CompatibilityConverter : IValueConverter
+namespace PCSX2Bonus.PCSX2Bonus
+{
+	internal sealed class CompatibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

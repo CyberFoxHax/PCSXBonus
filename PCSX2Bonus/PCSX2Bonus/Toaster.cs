@@ -1,10 +1,10 @@
-﻿namespace PCSX2Bonus
-{
-	using System.Collections.Generic;
-    using System.ComponentModel;
-	using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Threading.Tasks;
 
-    internal sealed class Toaster : INotifyPropertyChanged
+namespace PCSX2Bonus.PCSX2Bonus
+{
+	internal sealed class Toaster : INotifyPropertyChanged
     {
         private bool _isToasting;
         private string _message;

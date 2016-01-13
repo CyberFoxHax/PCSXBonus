@@ -1,9 +1,9 @@
-﻿namespace PCSX2Bonus.XmlSerialization {
-	using System.Runtime.InteropServices;
-	using System.Xml;
-	using System.Xml.Schema;
-	using System.Xml.Serialization;
+﻿using System.Runtime.InteropServices;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
 
+namespace PCSX2Bonus.PCSX2Bonus.XmlSerialization {
 	[StructLayout(LayoutKind.Sequential)]
 	public struct TimeSpan : IXmlSerializable {
 		private System.TimeSpan _value;

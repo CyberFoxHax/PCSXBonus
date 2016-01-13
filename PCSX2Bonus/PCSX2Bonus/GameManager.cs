@@ -1,4 +1,4 @@
-﻿namespace PCSX2Bonus{
+﻿namespace PCSX2Bonus.PCSX2Bonus{
 	internal class GameManager{
 		public static void Remove(Game game2){
 		}

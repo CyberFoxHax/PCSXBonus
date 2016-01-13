@@ -1,16 +1,16 @@
-﻿namespace PCSX2Bonus
-{
-    using Microsoft.Win32;
-    using System;
-    using System.CodeDom.Compiler;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.IO;
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Markup;
+﻿using System;
+using System.CodeDom.Compiler;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Markup;
+using Microsoft.Win32;
 
-    public sealed class wndShaderConfig : Window, IComponentConnector
+namespace PCSX2Bonus.PCSX2Bonus
+{
+	public sealed class wndShaderConfig : Window, IComponentConnector
     {
         private bool _contentLoaded;
         internal Button btnAddNew;

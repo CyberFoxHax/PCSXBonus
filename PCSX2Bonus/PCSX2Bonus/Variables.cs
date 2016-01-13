@@ -1,10 +1,10 @@
-﻿namespace PCSX2Bonus
-{
-    using PCSX2Bonus.Properties;
-    using System.IO;
-    using System.Xml.Linq;
+﻿using System.IO;
+using System.Xml.Linq;
+using PCSX2Bonus.Properties;
 
-    internal sealed class Variables
+namespace PCSX2Bonus.PCSX2Bonus
+{
+	internal sealed class Variables
     {
         public static void GenerateTheme()
         {

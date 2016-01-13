@@ -1,20 +1,20 @@
-﻿namespace PCSX2Bonus
-{
-    using CustomControls.ColorPicker;
-    using System;
-    using System.CodeDom.Compiler;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Drawing.Text;
-    using System.Linq;
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Data;
-    using System.Windows.Markup;
-    using System.Windows.Media;
+﻿using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Drawing.Text;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Markup;
+using System.Windows.Media;
+using PCSX2Bonus.CustomControls.ColorPicker;
 
-    public sealed class wndThemeEditor : Window, IComponentConnector
+namespace PCSX2Bonus.PCSX2Bonus
+{
+	public sealed class wndThemeEditor : Window, IComponentConnector
     {
         private bool _contentLoaded;
         private EditableTheme _theme = new EditableTheme();

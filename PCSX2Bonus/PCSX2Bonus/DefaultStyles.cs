@@ -1,9 +1,9 @@
-﻿namespace PCSX2Bonus
-{
-	using System.Windows;
-    using System.Windows.Media;
+﻿using System.Windows;
+using System.Windows.Media;
 
-    public sealed class DefaultStyles
+namespace PCSX2Bonus.PCSX2Bonus
+{
+	public sealed class DefaultStyles
     {
         public static SolidColorBrush ButtonBackgroundBrush = CreateBrush("#373737");
         public static SolidColorBrush ButtonBorderBrush = CreateBrush("Transparent");

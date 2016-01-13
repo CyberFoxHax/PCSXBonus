@@ -1,7 +1,7 @@
-﻿namespace PCSX2Bonus
-{
-    using System;
+﻿using System;
 
+namespace PCSX2Bonus.PCSX2Bonus
+{
 	internal sealed class SaveState
     {
         public DateTime LastModified { get; set; }

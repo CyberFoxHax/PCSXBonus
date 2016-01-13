@@ -1,8 +1,8 @@
-﻿namespace PCSX2Bonus
-{
-	using System.Windows;
+﻿using System.Windows;
 
-    internal sealed class ImageSizes
+namespace PCSX2Bonus.PCSX2Bonus
+{
+	internal sealed class ImageSizes
     {
         public static double ChildHeight = (TileItemHeight + 10.0);
         public static Size EditableSize = new Size(55.0, 75.0);

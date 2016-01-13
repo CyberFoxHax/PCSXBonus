@@ -1,11 +1,11 @@
-﻿namespace PCSX2Bonus
-{
-    using System;
-    using System.Globalization;
-    using System.Windows;
-    using System.Windows.Data;
+﻿using System;
+using System.Globalization;
+using System.Windows;
+using System.Windows.Data;
 
-    internal sealed class InverseBoolToVisibilityConverter : IValueConverter
+namespace PCSX2Bonus.PCSX2Bonus
+{
+	internal sealed class InverseBoolToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

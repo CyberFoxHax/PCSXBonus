@@ -1,11 +1,11 @@
-﻿namespace PCSX2Bonus
-{
-	using System.ComponentModel;
-	using System.Windows;
-    using System.Windows.Media;
-    using System.Xml.Linq;
+﻿using System.ComponentModel;
+using System.Windows;
+using System.Windows.Media;
+using System.Xml.Linq;
 
-    public sealed class EditableTheme
+namespace PCSX2Bonus.PCSX2Bonus
+{
+	public sealed class EditableTheme
     {
         private SolidColorBrush _ButtonBackgroundBrush = UserStyles.ButtonBackgroundBrush;
         private SolidColorBrush _ButtonDisabledBrush = UserStyles.ButtonDisabledBrush;

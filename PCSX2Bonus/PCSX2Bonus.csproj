@@ -105,7 +105,6 @@
     <Compile Include="PCSX2Bonus\IniFile.cs" />
     <Compile Include="PCSX2Bonus\InverseBoolToVisibilityConverter.cs" />
     <Compile Include="PCSX2Bonus\LiveDateTime.cs" />
-    <Compile Include="PCSX2Bonus\MainWindow.cs" />
     <Compile Include="PCSX2Bonus\MemoryCard.cs" />
     <Compile Include="PCSX2Bonus\MessageType.cs" />
     <Compile Include="PCSX2Bonus\PortableSettingsProvider.cs" />
@@ -118,14 +117,6 @@
     <Compile Include="PCSX2Bonus\UserSettings.cs" />
     <Compile Include="PCSX2Bonus\UserStyles.cs" />
     <Compile Include="PCSX2Bonus\Variables.cs" />
-    <Compile Include="PCSX2Bonus\wndAbout.cs" />
-    <Compile Include="PCSX2Bonus\wndCustomConfig.cs" />
-    <Compile Include="PCSX2Bonus\wndErrorReport.cs" />
-    <Compile Include="PCSX2Bonus\wndExecutableSelection.cs" />
-    <Compile Include="PCSX2Bonus\wndFullScreen.cs" />
-    <Compile Include="PCSX2Bonus\wndGameNotify.cs" />
-    <Compile Include="PCSX2Bonus\wndGenerateExecutable.cs" />
-    <Compile Include="PCSX2Bonus\wndMemCard.cs" />
     <Compile Include="PCSX2Bonus\wndScreenshots.cs" />
     <Compile Include="PCSX2Bonus\wndSettings.cs" />
     <Compile Include="PCSX2Bonus\wndSetup.cs" />
@@ -138,6 +129,30 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
+    <Compile Include="Views\windCustomConfig.xaml.cs">
+      <DependentUpon>windCustomConfig.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\wndAbout.xaml.cs">
+      <DependentUpon>wndAbout.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\wndErrorReport.xaml.cs">
+      <DependentUpon>wndErrorReport.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\wndExecutableSelection.xaml.cs">
+      <DependentUpon>wndExecutableSelection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\wndFullScreen.xaml.cs">
+      <DependentUpon>wndFullScreen.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\wndGameNotify.xaml.cs">
+      <DependentUpon>wndGameNotify.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\wndGenerateExecutable.xaml.cs">
+      <DependentUpon>wndGenerateExecutable.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\wndMemCard.xaml.cs">
+      <DependentUpon>wndMemCard.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Wpf\PlainView.cs" />
     <Compile Include="Wpf\VirtualizingTilePanel.cs" />
     <Compile Include="Wpf\GridViewSort.cs" />
@@ -145,6 +160,38 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\windCustomConfig.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\wndAbout.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\wndErrorReport.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\wndExecutableSelection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\wndFullScreen.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\wndGameNotify.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\wndGenerateExecutable.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\wndMemCard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

@@ -1,10 +1,10 @@
-﻿namespace PCSX2Bonus
-{
-	using System.Collections.ObjectModel;
-    using System.ComponentModel;
-	using System.Xml.Serialization;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Xml.Serialization;
 
-    public sealed class Game : INotifyPropertyChanged
+namespace PCSX2Bonus.PCSX2Bonus
+{
+	public sealed class Game : INotifyPropertyChanged
     {
         private static ObservableCollection<Game> _allGames = new ObservableCollection<Game>();
         private int _compatibility;
@@ -144,7 +144,7 @@
         public string Serial { get; set; }
 
         [XmlElement("Time")]
-        public PCSX2Bonus.XmlSerialization.TimeSpan TimePlayed { get; set; }
+        public global::PCSX2Bonus.PCSX2Bonus.XmlSerialization.TimeSpan TimePlayed { get; set; }
 
         public string TimePlayedString
         {

@@ -1,14 +1,14 @@
-﻿namespace PCSX2Bonus {
-	using Properties;
-	using System;
-	using System.ComponentModel;
-	using System.Diagnostics;
-	using System.IO;
-	using System.Linq;
-	using System.Net;
-	using System.Windows.Forms;
-	using System.Windows.Input;
+﻿using System;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Windows.Forms;
+using System.Windows.Input;
+using PCSX2Bonus.Properties;
 
+namespace PCSX2Bonus.PCSX2Bonus {
 	public sealed class Commands {
 		private static ICommand _aboutCommand;
 		private static ICommand _addfromDirCommand;
@@ -40,7 +40,7 @@
 		}
 
 		private static void GenerateExecutable(Game g) {
-			var executable = new wndGenerateExecutable {
+			var executable = new Views.wndGenerateExecutable {
 				Tag = g
 			};
 			var flag1 = executable.ShowDialog() == true;
@@ -79,11 +79,11 @@
 		}
 
 		private static void ShowAbout(object o) {
-			new wndAbout().ShowDialog();
+			new Views.wndAbout().ShowDialog();
 		}
 
 		private static void ShowCustomConfig(Game g) {
-			var config = new wndCustomConfig {
+			var config = new Views.wndCustomConfig {
 				Tag = g
 			};
 			GameManager.ImportConfig(g);
@@ -91,14 +91,14 @@
 		}
 
 		private static void ShowExecutableSelection(Game g) {
-			var selection = new wndExecutableSelection {
+			var selection = new Views.wndExecutableSelection {
 				Tag = g
 			};
 			var flag1 = selection.ShowDialog() == true;
 		}
 
 		private static void ShowMemoryCardSelection(Game g) {
-			var card = new wndMemCard {
+			var card = new Views.wndMemCard {
 				Tag = g
 			};
 			var flag1 = card.ShowDialog() == true;
@@ -115,7 +115,7 @@
 		private static void ShowSettings(object o) {
 			var settings = new wndSettings();
 			if (settings.ShowDialog() != true) return;
-			var mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
+			var mainWindow = (Views.MainWindow)System.Windows.Application.Current.MainWindow;
 			var defaultSort = Settings.Default.defaultSort;
 			if (defaultSort == null) return;
 			if (defaultSort != "Alphabetical") {

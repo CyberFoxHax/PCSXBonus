@@ -1,13 +1,10 @@
-﻿namespace PCSX2Bonus {
-	using System;
-	using System.ComponentModel;
-	using System.IO;
-	using System.Runtime.CompilerServices;
-	using System.Threading;
-	using System.Windows;
-	using System.Windows.Media;
-	using System.Xml.Linq;
+﻿using System.ComponentModel;
+using System.IO;
+using System.Windows;
+using System.Windows.Media;
+using System.Xml.Linq;
 
+namespace PCSX2Bonus.PCSX2Bonus {
 	public sealed class UserStyles : INotifyPropertyChanged {
 		private static readonly FontFamilyConverter _fontConverter = new FontFamilyConverter();
 		private static readonly FontWeightConverter _fontWeightConverter = new FontWeightConverter();

@@ -1,8 +1,8 @@
-﻿namespace PCSX2Bonus {
-	using System;
-	using System.Diagnostics;
-	using System.Windows.Input;
+﻿using System;
+using System.Diagnostics;
+using System.Windows.Input;
 
+namespace PCSX2Bonus.PCSX2Bonus {
 	public sealed class RelayCommand<T> : ICommand {
 		private readonly Predicate<T> _canExecute;
 		private readonly Action<T> _execute;

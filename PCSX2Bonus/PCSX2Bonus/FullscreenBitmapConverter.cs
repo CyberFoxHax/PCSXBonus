@@ -1,12 +1,12 @@
-﻿namespace PCSX2Bonus
-{
-    using System;
-    using System.Globalization;
-    using System.IO;
-    using System.Windows.Data;
-    using System.Windows.Media.Imaging;
+﻿using System;
+using System.Globalization;
+using System.IO;
+using System.Windows.Data;
+using System.Windows.Media.Imaging;
 
-    internal sealed class FullscreenBitmapConverter : IValueConverter
+namespace PCSX2Bonus.PCSX2Bonus
+{
+	internal sealed class FullscreenBitmapConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

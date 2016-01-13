@@ -1,19 +1,19 @@
-﻿namespace PCSX2Bonus {
-	using System;
-	using System.CodeDom.Compiler;
-	using System.Collections.Generic;
-	using System.Collections.ObjectModel;
-	using System.ComponentModel;
-	using System.Diagnostics;
-	using System.IO;
-	using System.Linq;
-	using System.Threading;
-	using System.Windows;
-	using System.Windows.Controls;
-	using System.Windows.Input;
-	using System.Windows.Markup;
-	using System.Windows.Media.Imaging;
+﻿using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Markup;
+using System.Windows.Media.Imaging;
 
+namespace PCSX2Bonus.PCSX2Bonus {
 	public sealed class wndScreenshots : Window, IComponentConnector, IStyleConnector {
 		private bool _contentLoaded;
 		private readonly ObservableCollection<BitmapImage> _imageLinks = new ObservableCollection<BitmapImage>();

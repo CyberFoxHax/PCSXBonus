@@ -1,8 +1,8 @@
-﻿namespace PCSX2Bonus {
-	using System;
-	using System.Xml.Linq;
-	using System.IO;
+﻿using System;
+using System.IO;
+using System.Xml.Linq;
 
+namespace PCSX2Bonus.PCSX2Bonus {
 	internal sealed class UserSettings {
 		public static string BonusXml = Path.Combine(RootDir, "mygames.xml");
 		public static string ConfigDir = Path.Combine(RootDir, "Configs");

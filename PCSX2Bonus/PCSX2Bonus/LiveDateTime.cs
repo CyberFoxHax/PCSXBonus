@@ -1,10 +1,10 @@
-﻿namespace PCSX2Bonus
-{
-    using System;
-    using System.ComponentModel;
-    using System.Timers;
+﻿using System;
+using System.ComponentModel;
+using System.Timers;
 
-    internal sealed class LiveDateTime : INotifyPropertyChanged
+namespace PCSX2Bonus.PCSX2Bonus
+{
+	internal sealed class LiveDateTime : INotifyPropertyChanged
     {
         private static LiveDateTime _instance = new LiveDateTime();
         private System.Timers.Timer timer;

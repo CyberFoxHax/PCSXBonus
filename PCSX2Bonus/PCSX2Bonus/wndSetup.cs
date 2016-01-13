@@ -1,15 +1,15 @@
-﻿namespace PCSX2Bonus {
-	using Properties;
-	using System;
-	using System.CodeDom.Compiler;
-	using System.ComponentModel;
-	using System.Diagnostics;
-	using System.IO;
-	using System.Linq;
-	using System.Windows;
-	using System.Windows.Forms;
-	using System.Windows.Markup;
+﻿using System;
+using System.CodeDom.Compiler;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Windows;
+using System.Windows.Forms;
+using System.Windows.Markup;
+using PCSX2Bonus.Properties;
 
+namespace PCSX2Bonus.PCSX2Bonus {
 	public sealed class wndSetup : Window, IComponentConnector {
 		private bool _contentLoaded;
 		internal System.Windows.Controls.Button btnBrowse;

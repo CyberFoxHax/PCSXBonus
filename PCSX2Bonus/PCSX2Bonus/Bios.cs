@@ -1,4 +1,4 @@
-﻿namespace PCSX2Bonus {
+﻿namespace PCSX2Bonus.PCSX2Bonus {
 	public sealed class Bios {
 		public string DisplayInfo { get; set; }
 		public string Location { get; set; }

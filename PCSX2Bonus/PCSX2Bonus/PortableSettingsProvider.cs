@@ -1,14 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections;
+using System.Collections.Specialized;
+using System.Configuration;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
+using System.Xml;
 
-namespace PCSX2Bonus {
-	using System;
-	using System.Collections;
-	using System.Collections.Specialized;
-	using System.Configuration;
-	using System.IO;
-	using System.Windows.Forms;
-	using System.Xml;
-
+namespace PCSX2Bonus.PCSX2Bonus {
 	public sealed class PortableSettingsProvider : SettingsProvider {
 		private XmlDocument _settingsXML;
 		private const string SETTINGSROOT = "Settings";

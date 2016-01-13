@@ -1,11 +1,11 @@
-﻿namespace PCSX2Bonus
-{
-    using System;
-    using System.Globalization;
-    using System.Windows.Data;
-    using System.Windows.Media;
+﻿using System;
+using System.Globalization;
+using System.Windows.Data;
+using System.Windows.Media;
 
-    internal sealed class ScoreToColorConverter : IValueConverter
+namespace PCSX2Bonus.PCSX2Bonus
+{
+	internal sealed class ScoreToColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
