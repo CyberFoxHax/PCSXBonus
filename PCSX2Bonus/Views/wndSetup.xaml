@@ -1,8 +1,27 @@
 ﻿<Window x:Class="PCSX2Bonus.Views.wndSetup"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="wndSetup" Height="300" Width="300">
-    <Grid>
-        
-    </Grid>
+        Title="wndSetup" MinHeight="136" MinWidth="421" Height="179" Width="464" Background="#FFCFCFCF">
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="143*"/>
+			<ColumnDefinition Width="256*"/>
+			<ColumnDefinition Width="57*"/>
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="2*"/>
+		</Grid.RowDefinitions>
+		<Label Content="PCSX2 Directory:" />
+		<TextBox x:Name="tbPcsx2Dir" Grid.Row="0" Grid.Column="1" Margin="0,5" />
+		<Button x:Name="btnBrowse" Click="btnBrowse_Click" Content="..." Grid.Row="0" Grid.Column="2" Margin="5" />
+
+		<Label Grid.Row="1" Grid.Column="0" Content="PCSX2 Data Directory:" />
+		<TextBox x:Name="tbPcsx2DataDir" Grid.Row="1" Grid.Column="1" Margin="0,5" />
+		<Button x:Name="btnBrowseData" Click="btnBrowseData_Click" Content="..." Grid.Row="1" Grid.Column="2" Margin="5" />
+
+		<Button x:Name="btnOk" Content="Ok" Click="btnOk_Click" HorizontalAlignment="Right" Width="124" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Height="36" VerticalAlignment="Bottom" Margin="0,0,10,10" />
+
+	</Grid>
 </Window>

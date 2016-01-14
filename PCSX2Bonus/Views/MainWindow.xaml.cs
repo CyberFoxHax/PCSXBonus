@@ -372,7 +372,7 @@ namespace PCSX2Bonus.Views {
 					let extension = Path.GetExtension(s)
 					where Legacy.GameData.AcceptableFormats.Any(frm => extension != null && extension.Equals(frm, StringComparison.InvariantCultureIgnoreCase))
 					select s
-				).ToArray<string>();
+				).ToArray();
 				await Legacy.GameManager.AddGamesFromImages(files);
 			};
 			miPlay.Click += delegate {

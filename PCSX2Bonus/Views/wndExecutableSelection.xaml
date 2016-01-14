@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="wndExecutableSelection" Height="300" Width="300">
     <Grid>
-        
-    </Grid>
+		<Label Content="wndExecutableSelection" />
+
+	</Grid>
 </Window>
