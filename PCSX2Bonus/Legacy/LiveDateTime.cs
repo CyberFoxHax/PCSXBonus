@@ -2,50 +2,28 @@
 using System.ComponentModel;
 using System.Timers;
 
-namespace PCSX2Bonus.Legacy
-{
-	internal sealed class LiveDateTime : INotifyPropertyChanged
-    {
-        private static LiveDateTime _instance = new LiveDateTime();
-        private System.Timers.Timer timer;
+namespace PCSX2Bonus.Legacy {
+	internal sealed class LiveDateTime : INotifyPropertyChanged {
+		public event PropertyChangedEventHandler PropertyChanged;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+		public LiveDateTime() {
+			var timer = new Timer(1000.0);
+			ElapsedEventHandler handler = (o, e) => OnPropertyChanged("Now");
+			timer.Elapsed += handler;
+			timer.Start();
+		}
 
-        public LiveDateTime()
-        {
-            ElapsedEventHandler handler = null;
-            this.timer = new System.Timers.Timer(1000.0);
-            if (handler == null)
-            {
-                handler = (o, e) => this.OnPropertyChanged("Now");
-            }
-            this.timer.Elapsed += handler;
-            this.timer.Start();
-        }
+		private void OnPropertyChanged(string property) {
+			if (PropertyChanged != null) {
+				PropertyChanged(this, new PropertyChangedEventArgs(property));
+			}
+		}
 
-        private void OnPropertyChanged(string property)
-        {
-            if (this.PropertyChanged != null)
-            {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(property));
-            }
-        }
-
-        public static LiveDateTime Instance
-        {
-            get
-            {
-                return _instance;
-            }
-        }
-
-        public DateTime Now
-        {
-            get
-            {
-                return DateTime.Now;
-            }
-        }
-    }
+		public DateTime Now {
+			get {
+				return DateTime.Now;
+			}
+		}
+	}
 }
 

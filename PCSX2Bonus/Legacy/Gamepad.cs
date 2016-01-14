@@ -19,64 +19,63 @@ namespace PCSX2Bonus.Legacy {
 
 		public Gamepad(Window wnd) {
 			foreach (DeviceInstance instance in Manager.GetDevices(DeviceClass.GameControl, EnumDevicesFlags.AttachedOnly)) {
-				this._joystick = new Device(instance.InstanceGuid);
+				_joystick = new Device(instance.InstanceGuid);
 				break;
 			}
-			if (this._joystick == null) {
+			if (_joystick == null) {
 				Tools.ShowMessage("No gamepad found!", MessageType.Error);
 			}
 			else {
-				WindowInteropHelper helper = new WindowInteropHelper(wnd);
-				this._joystick.SetCooperativeLevel(helper.Handle, CooperativeLevelFlags.Background | CooperativeLevelFlags.NonExclusive);
-				this._joystick.Properties.BufferSize = 0x80;
-				this._joystick.Acquire();
-				this.IsValid = true;
+				var helper = new WindowInteropHelper(wnd);
+				_joystick.SetCooperativeLevel(helper.Handle, CooperativeLevelFlags.Background | CooperativeLevelFlags.NonExclusive);
+				_joystick.Properties.BufferSize = 0x80;
+				_joystick.Acquire();
+				IsValid = true;
 			}
 		}
 
 		private async void BeginPoll() {
 			try {
-				if (!this.IsValid) {
+				if (!IsValid) {
 					return;
 				}
-				this.IsPolling = true;
+				IsPolling = true;
 			Label_007E:
-				if (this.cts.IsCancellationRequested) {
+				if (cts.IsCancellationRequested) {
 					return;
 				}
-				this._joystick.Poll();
-				BufferedDataCollection bufferedData = this._joystick.GetBufferedData();
+				_joystick.Poll();
+				var bufferedData = _joystick.GetBufferedData();
 				if (bufferedData != null) {
-					IEnumerator enumerator = bufferedData.GetEnumerator();
+					var enumerator = bufferedData.GetEnumerator();
 					try {
 						while (enumerator.MoveNext()) {
-							BufferedData current = (BufferedData)enumerator.Current;
+							var current = (BufferedData)enumerator.Current;
 							if (current.ButtonPressedData == 1) {
-								int button = Array.FindIndex<byte>(this.Buttons, b => b != 0);
+								var button = Array.FindIndex<byte>(Buttons, b => b != 0);
 								if (button == -1) {
 									continue;
 								}
-								this.OnButtonPressed(button);
+								OnButtonPressed(button);
 								goto Label_03F5;
 							}
-							if (current.ButtonPressedData == 0) {
-								if (this.LeftStickX > 0xafc8) {
-									this.OnDirectionChanged("right");
-									await Task.Delay(250);
-								}
-								else if (this.LeftStickX < 0x4a38) {
-									this.OnDirectionChanged("left");
-									await Task.Delay(250);
-								}
-								if (this.LeftStickY > 0xafc8) {
-									this.OnDirectionChanged("down");
-									await Task.Delay(250);
-									continue;
-								}
-								if (this.LeftStickY < 0x4a38) {
-									this.OnDirectionChanged("up");
-									await Task.Delay(250);
-								}
+							if (current.ButtonPressedData != 0) continue;
+							if (LeftStickX > 0xafc8) {
+								OnDirectionChanged("right");
+								await Task.Delay(250);
+							}
+							else if (LeftStickX < 0x4a38) {
+								OnDirectionChanged("left");
+								await Task.Delay(250);
+							}
+							if (LeftStickY > 0xafc8) {
+								OnDirectionChanged("down");
+								await Task.Delay(250);
+								continue;
+							}
+							if (LeftStickY < 0x4a38) {
+								OnDirectionChanged("up");
+								await Task.Delay(250);
 							}
 						}
 					}
@@ -89,25 +88,25 @@ namespace PCSX2Bonus.Legacy {
 					}
 				}
 			Label_03F5:
-				if (this._joystick != null) {
-					switch (this.DirectionalButtons[0]) {
+				if (_joystick != null) {
+					switch (DirectionalButtons[0]) {
 						case 0:
-							this.OnDirectionChanged("up");
+							OnDirectionChanged("up");
 							await Task.Delay(250);
 							break;
 
 						case 0x2328:
-							this.OnDirectionChanged("right");
+							OnDirectionChanged("right");
 							await Task.Delay(250);
 							break;
 
 						case 0x4650:
-							this.OnDirectionChanged("down");
+							OnDirectionChanged("down");
 							await Task.Delay(250);
 							break;
 
 						case 0x6978:
-							this.OnDirectionChanged("left");
+							OnDirectionChanged("left");
 							await Task.Delay(250);
 							break;
 					}
@@ -115,52 +114,52 @@ namespace PCSX2Bonus.Legacy {
 				goto Label_007E;
 			}
 			catch (Exception exception) {
-				this.IsPolling = false;
+				IsPolling = false;
 				Console.WriteLine(exception.Message);
 			}
 		}
 
 		public void CancelPollAsync() {
-			this.cts.Cancel();
-			this.IsPolling = false;
+			cts.Cancel();
+			IsPolling = false;
 		}
 
 		public void Dispose() {
-			if (this._joystick != null) {
-				this._joystick.Unacquire();
-				this._joystick.Dispose();
-				this._joystick = null;
+			if (_joystick != null) {
+				_joystick.Unacquire();
+				_joystick.Dispose();
+				_joystick = null;
 			}
-			this.IsValid = false;
+			IsValid = false;
 		}
 
 		private void OnButtonPressed(int button) {
-			if (this.ButtonPressed != null) {
-				this.ButtonPressed(button, EventArgs.Empty);
+			if (ButtonPressed != null) {
+				ButtonPressed(button, EventArgs.Empty);
 			}
 		}
 
 		private void OnDirectionChanged(string direction) {
-			if (this.DirectionChanged != null) {
-				this.DirectionChanged(direction, EventArgs.Empty);
+			if (DirectionChanged != null) {
+				DirectionChanged(direction, EventArgs.Empty);
 			}
 		}
 
 		public void PollAsync() {
-			this.cts = new CancellationTokenSource();
-			this.pollingTask = new Task(new System.Action(this.BeginPoll), this.cts.Token);
-			this.pollingTask.Start();
+			cts = new CancellationTokenSource();
+			pollingTask = new Task(BeginPoll, cts.Token);
+			pollingTask.Start();
 		}
 
 		public byte[] Buttons {
 			get {
-				return this._joystick.CurrentJoystickState.GetButtons();
+				return _joystick.CurrentJoystickState.GetButtons();
 			}
 		}
 
 		public int[] DirectionalButtons {
 			get {
-				return this._joystick.CurrentJoystickState.GetPointOfView();
+				return _joystick.CurrentJoystickState.GetPointOfView();
 			}
 		}
 
@@ -168,13 +167,13 @@ namespace PCSX2Bonus.Legacy {
 
 		public int LeftStickX {
 			get {
-				return this._joystick.CurrentJoystickState.X;
+				return _joystick.CurrentJoystickState.X;
 			}
 		}
 
 		public int LeftStickY {
 			get {
-				return this._joystick.CurrentJoystickState.Y;
+				return _joystick.CurrentJoystickState.Y;
 			}
 		}
 

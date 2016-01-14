@@ -26,7 +26,7 @@ namespace PCSX2Bonus.Legacy {
 
 		public static string Between(this string src, string findfrom, string findto) {
 			var index = src.IndexOf(findfrom);
-			var num2 = src.IndexOf(findto, (int)(index + findfrom.Length));
+			var num2 = src.IndexOf(findto, index + findfrom.Length);
 			if ((index >= 0) && (num2 >= 0)) {
 				return src.Substring(index + findfrom.Length, (num2 - index) - findfrom.Length);
 			}
@@ -34,7 +34,7 @@ namespace PCSX2Bonus.Legacy {
 		}
 
 		public static string CleanFileName(this string fileName) {
-			return Path.GetInvalidFileNameChars().Aggregate<char, string>(fileName, (current, c) => current.Replace(c.ToString(), ""));
+			return Path.GetInvalidFileNameChars().Aggregate(fileName, (current, c) => current.Replace(c.ToString(), ""));
 		}
 
 		public static bool Contains(this string source, string toCheck, StringComparison comp) {

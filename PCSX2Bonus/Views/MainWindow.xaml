@@ -1,8 +1,10 @@
 ﻿<Window x:Class="PCSX2Bonus.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="230.093" Width="333.036">
+        Title="MainWindow" Height="368.093" Width="491.036">
 	<Grid>
-		<Label Content="MainWindow" /> 
+		<Menu Height="23" VerticalAlignment="Top">
+			<MenuItem Header="Diu" />
+		</Menu>
 	</Grid>
 </Window>

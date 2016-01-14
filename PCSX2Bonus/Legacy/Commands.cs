@@ -26,7 +26,7 @@ namespace PCSX2Bonus.Legacy {
 		private async static void AddFromDirectory(object o) {
 			string[] toAdd;
 			var fbd = new FolderBrowserDialog();
-			if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+			if (fbd.ShowDialog() == DialogResult.OK) {
 				toAdd = (from s in Directory.GetFiles(fbd.SelectedPath, "*", SearchOption.AllDirectories)
 					let extension = Path.GetExtension(s)
 					where GameData.AcceptableFormats.Any(frm => extension != null && extension.Equals(frm, StringComparison.InvariantCultureIgnoreCase))
@@ -43,7 +43,7 @@ namespace PCSX2Bonus.Legacy {
 			var executable = new Views.wndGenerateExecutable {
 				Tag = g
 			};
-			var flag1 = executable.ShowDialog() == true;
+			executable.ShowDialog();
 		}
 
 		private static void GetGameManual(Game g) {
@@ -52,7 +52,7 @@ namespace PCSX2Bonus.Legacy {
 		}
 
 		private static void OpenDonate(object o) {
-			Process.Start("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=M47HDYMNN4ZTQ&lc=US&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted");
+			//Process.Start("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=M47HDYMNN4ZTQ&lc=US&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted");
 		}
 
 		private static void SetCoverArt(Game g) {
@@ -87,21 +87,21 @@ namespace PCSX2Bonus.Legacy {
 				Tag = g
 			};
 			GameManager.ImportConfig(g);
-			var flag1 = config.ShowDialog() == true;
+			config.ShowDialog();
 		}
 
 		private static void ShowExecutableSelection(Game g) {
 			var selection = new Views.wndExecutableSelection {
 				Tag = g
 			};
-			var flag1 = selection.ShowDialog() == true;
+			selection.ShowDialog();
 		}
 
 		private static void ShowMemoryCardSelection(Game g) {
 			var card = new Views.wndMemCard {
 				Tag = g
 			};
-			var flag1 = card.ShowDialog() == true;
+			card.ShowDialog();
 		}
 
 		private static void ShowScreenshots(Game g) {
@@ -136,7 +136,7 @@ namespace PCSX2Bonus.Legacy {
 			var config = new Views.wndShaderConfig {
 				Tag = g
 			};
-			var flag1 = config.ShowDialog() == true;
+			config.ShowDialog();
 		}
 
 		public static ICommand AboutCommand {
