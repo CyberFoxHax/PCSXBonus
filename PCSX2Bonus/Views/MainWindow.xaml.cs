@@ -98,7 +98,7 @@ namespace PCSX2Bonus.Views {
 			if ((!Extensions.IsEmpty(Settings.Default.pcsx2Dir) && !Extensions.IsEmpty(Settings.Default.pcsx2DataDir)) &&
 				(Directory.Exists(Settings.Default.pcsx2Dir) && Directory.Exists(Settings.Default.pcsx2DataDir))) return;
 			PCSX2Bonus.Tools.ShowMessage("Please select the directory containing PCSX2 and the PCSX2 data directory", PCSX2Bonus.MessageType.Info);
-			new PCSX2Bonus.wndSetup().ShowDialog();
+			new wndSetup().ShowDialog();
 		}
 
 		private void ClearViewStates(System.Windows.Controls.Primitives.ToggleButton sender) {

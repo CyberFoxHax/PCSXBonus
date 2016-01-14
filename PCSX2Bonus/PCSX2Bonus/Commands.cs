@@ -105,7 +105,7 @@ namespace PCSX2Bonus.PCSX2Bonus {
 		}
 
 		private static void ShowScreenshots(Game g) {
-			var screenshots = new wndScreenshots {
+			var screenshots = new Views.wndScreenshots {
 				Tag = g
 			};
 			if (screenshots.ShowDialog() == true)
@@ -113,7 +113,7 @@ namespace PCSX2Bonus.PCSX2Bonus {
 		}
 
 		private static void ShowSettings(object o) {
-			var settings = new wndSettings();
+			var settings = new Views.wndSettings();
 			if (settings.ShowDialog() != true) return;
 			var mainWindow = (Views.MainWindow)System.Windows.Application.Current.MainWindow;
 			var defaultSort = Settings.Default.defaultSort;
@@ -133,7 +133,7 @@ namespace PCSX2Bonus.PCSX2Bonus {
 		}
 
 		private static void ShowShaderSelection(Game g) {
-			var config = new wndShaderConfig {
+			var config = new Views.wndShaderConfig {
 				Tag = g
 			};
 			var flag1 = config.ShowDialog() == true;

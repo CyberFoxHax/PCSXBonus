@@ -117,11 +117,6 @@
     <Compile Include="PCSX2Bonus\UserSettings.cs" />
     <Compile Include="PCSX2Bonus\UserStyles.cs" />
     <Compile Include="PCSX2Bonus\Variables.cs" />
-    <Compile Include="PCSX2Bonus\wndScreenshots.cs" />
-    <Compile Include="PCSX2Bonus\wndSettings.cs" />
-    <Compile Include="PCSX2Bonus\wndSetup.cs" />
-    <Compile Include="PCSX2Bonus\wndShaderConfig.cs" />
-    <Compile Include="PCSX2Bonus\wndThemeEditor.cs" />
     <Compile Include="PCSX2Bonus\XmlSerialization\TimeSpan.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -152,6 +147,21 @@
     </Compile>
     <Compile Include="Views\wndMemCard.xaml.cs">
       <DependentUpon>wndMemCard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\wndScreenshots.xaml.cs">
+      <DependentUpon>wndScreenshots.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\wndSettings.xaml.cs">
+      <DependentUpon>wndSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\wndSetup.xaml.cs">
+      <DependentUpon>wndSetup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\wndShaderConfig.xaml.cs">
+      <DependentUpon>wndShaderConfig.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\wndThemeEditor.xaml.cs">
+      <DependentUpon>wndThemeEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Wpf\PlainView.cs" />
     <Compile Include="Wpf\VirtualizingTilePanel.cs" />
@@ -189,6 +199,26 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\wndMemCard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\wndScreenshots.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\wndSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\wndSetup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\wndShaderConfig.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\wndThemeEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
