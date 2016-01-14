@@ -3,16 +3,16 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
 using PCSX2Bonus.Properties;
-using Extensions = PCSX2Bonus.PCSX2Bonus.Extensions;
+using Extensions = PCSX2Bonus.Legacy.Extensions;
 
 namespace PCSX2Bonus.Views {
 	public sealed partial class wndMemCard {
 		internal System.Windows.Controls.Button btnBrowse;
 		internal System.Windows.Controls.Button btnCancel;
 		internal System.Windows.Controls.Button btnOk;
-		private PCSX2Bonus.Game g;
+		private Legacy.Game g;
 		internal System.Windows.Controls.ListView lvMemCards;
-		private PCSX2Bonus.IniFile _pcsx2Ui;
+		private Legacy.IniFile _pcsx2Ui;
 		internal System.Windows.Controls.TextBox tbCardPath;
 
 		public wndMemCard() {
@@ -26,10 +26,10 @@ namespace PCSX2Bonus.Views {
 			if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
 			tbCardPath.Text = dialog.SelectedPath;
 			lvMemCards.Items.Clear();
-			foreach (var newItem in Directory.GetFiles(dialog.SelectedPath, "*.ps2").Select(str => new FileInfo(str)).Select(info => new PCSX2Bonus.MemoryCard {
+			foreach (var newItem in Directory.GetFiles(dialog.SelectedPath, "*.ps2").Select(str => new FileInfo(str)).Select(info => new Legacy.MemoryCard {
 				Name = info.Name,
 				WriteTime = info.LastWriteTime.ToShortDateString(),
-				Size = PCSX2Bonus.Tools.GetSizeReadable2(info.Length)
+				Size = Legacy.Tools.GetSizeReadable2(info.Length)
 			})) {
 				lvMemCards.Items.Add(newItem);
 			}
@@ -42,22 +42,22 @@ namespace PCSX2Bonus.Views {
 		private void btnOk_Click(object sender, RoutedEventArgs e) {
 			if (!Extensions.IsEmpty(tbCardPath.Text)) {
 				if (lvMemCards.SelectedItems.Count == 0) {
-					PCSX2Bonus.Tools.ShowMessage("You must select a card to assign", PCSX2Bonus.MessageType.Error);
+					Legacy.Tools.ShowMessage("You must select a card to assign", Legacy.MessageType.Error);
 				}
 				else {
 					_pcsx2Ui.Write("Folders", "UseDefaultMemoryCards", "disabled");
-					var iNIPath = PCSX2Bonus.UserSettings.ConfigDir + @"\" + g.FileSafeTitle + @"\PCSX2_ui.ini";
-					var selectedItem = (PCSX2Bonus.MemoryCard)lvMemCards.SelectedItem;
-					var file = new PCSX2Bonus.IniFile(iNIPath);
+					var iNIPath = Legacy.UserSettings.ConfigDir + @"\" + g.FileSafeTitle + @"\PCSX2_ui.ini";
+					var selectedItem = (Legacy.MemoryCard)lvMemCards.SelectedItem;
+					var file = new Legacy.IniFile(iNIPath);
 					file.Write("MemoryCards", "Slot1_Enable", "enabled");
 					file.Write("MemoryCards", "Slot1_Filename", selectedItem.Name);
 					file.Write("Folders", "MemoryCards", Extensions.Escape(tbCardPath.Text));
-					PCSX2Bonus.Tools.ShowMessage("Successfully assigned and enabled " + selectedItem.Name + " to slot 1\n for the game " + g.Title, PCSX2Bonus.MessageType.Info);
+					Legacy.Tools.ShowMessage("Successfully assigned and enabled " + selectedItem.Name + " to slot 1\n for the game " + g.Title, Legacy.MessageType.Info);
 					Close();
 				}
 			}
 			else {
-				PCSX2Bonus.Tools.ShowMessage("The selected memory card cannot be null", PCSX2Bonus.MessageType.Error);
+				Legacy.Tools.ShowMessage("The selected memory card cannot be null", Legacy.MessageType.Error);
 			}
 		}
 
@@ -79,19 +79,19 @@ namespace PCSX2Bonus.Views {
 			else {
 				tbCardPath.Text = path;
 			}
-			foreach (var newItem in Directory.GetFiles(tbCardPath.Text, "*.ps2").Select(str2 => new FileInfo(str2)).Select(info => new PCSX2Bonus.MemoryCard {
+			foreach (var newItem in Directory.GetFiles(tbCardPath.Text, "*.ps2").Select(str2 => new FileInfo(str2)).Select(info => new Legacy.MemoryCard {
 				Name = info.Name,
 				WriteTime = info.LastWriteTime.ToShortDateString(),
-				Size = PCSX2Bonus.Tools.GetSizeReadable2(info.Length)
+				Size = Legacy.Tools.GetSizeReadable2(info.Length)
 			})) {
 				lvMemCards.Items.Add(newItem);
 			}
 		}
 
 		private void Setup() {
-			g = (PCSX2Bonus.Game)Tag;
+			g = (Legacy.Game)Tag;
 			Title = "Memory Card Management [" + g.Title + "]";
-			_pcsx2Ui = new PCSX2Bonus.IniFile(Path.Combine(PCSX2Bonus.UserSettings.ConfigDir, Path.Combine(g.FileSafeTitle, "PCSX2_ui.ini")));
+			_pcsx2Ui = new Legacy.IniFile(Path.Combine(Legacy.UserSettings.ConfigDir, Path.Combine(g.FileSafeTitle, "PCSX2_ui.ini")));
 			LoadInitialCard();
 		}
 

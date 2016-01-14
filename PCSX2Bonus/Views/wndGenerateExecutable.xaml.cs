@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Forms;
 using Microsoft.CSharp;
 using PCSX2Bonus.Properties;
-using Extensions = PCSX2Bonus.PCSX2Bonus.Extensions;
+using Extensions = PCSX2Bonus.Legacy.Extensions;
 
 namespace PCSX2Bonus.Views {
 	public sealed partial class wndGenerateExecutable {
@@ -23,7 +23,7 @@ namespace PCSX2Bonus.Views {
 		internal System.Windows.Controls.CheckBox cbNoHacks;
 		internal System.Windows.Controls.CheckBox cbUseDefault;
 		internal System.Windows.Controls.CheckBox cbUseDefaultIcon;
-		private PCSX2Bonus.Game g;
+		private Legacy.Game g;
 		internal System.Windows.Controls.TextBox tbIconPath;
 		internal System.Windows.Controls.TextBox tbOutputPath;
 
@@ -35,7 +35,7 @@ namespace PCSX2Bonus.Views {
 
 		private void btnOk_Click(object sender, RoutedEventArgs e) {
 			if (Extensions.IsEmpty(tbOutputPath.Text))
-				PCSX2Bonus.Tools.ShowMessage("Output path cannot be empty!", PCSX2Bonus.MessageType.Error);
+				Legacy.Tools.ShowMessage("Output path cannot be empty!", Legacy.MessageType.Error);
 			else {
 				var path = string.Empty;
 				try {
@@ -47,7 +47,7 @@ namespace PCSX2Bonus.Views {
 					var str5 = cbNoDisc.IsChecked.Value ? "--nodisc" : string.Empty;
 					var str6 = cbFullBoot.IsChecked.Value ? "--fullboot" : string.Empty;
 					var str7 = cbUseDefault.IsChecked.Value
-						? ("--cfgpath=\"\"" + PCSX2Bonus.UserSettings.ConfigDir + @"\" + g.FileSafeTitle + "\"\"")
+						? ("--cfgpath=\"\"" + Legacy.UserSettings.ConfigDir + @"\" + g.FileSafeTitle + "\"\"")
 						: string.Empty;
 					var outputName = tbOutputPath.Text + @"\" + g.FileSafeTitle + ".exe";
 					var providerOptions = new Dictionary<string, string>();
@@ -57,7 +57,7 @@ namespace PCSX2Bonus.Views {
 						GenerateExecutable = true
 					};
 					if (cbUseDefaultIcon.IsChecked != null && cbUseDefaultIcon.IsChecked.Value) {
-						path = PCSX2Bonus.UserSettings.ImageDir + @"\" + g.FileSafeTitle + ".ico";
+						path = Legacy.UserSettings.ImageDir + @"\" + g.FileSafeTitle + ".ico";
 						CreateIcon(path, true);
 						options.CompilerOptions = string.Format("/target:winexe /optimize /win32icon:{1}{0}{1}", path, "\"");
 					}
@@ -71,7 +71,7 @@ namespace PCSX2Bonus.Views {
 					options.ReferencedAssemblies.Add("System.dll");
 					options.IncludeDebugInformation = false;
 					var str9 = Settings.Default.pcsx2Exe;
-					var file = new PCSX2Bonus.IniFile(PCSX2Bonus.UserSettings.ConfigDir + @"\" + g.Title + @"\Settings.ini");
+					var file = new Legacy.IniFile(Legacy.UserSettings.ConfigDir + @"\" + g.Title + @"\Settings.ini");
 					if (!string.IsNullOrWhiteSpace(file.Read("Additional Executables", "Default"))) {
 						str9 = file.Read("Additional Executables", "Default");
 					}
@@ -99,8 +99,8 @@ namespace PCSX2Bonus.Views {
 						"PCSX2Bonus", MessageBoxButton.OK, MessageBoxImage.Asterisk);
 				}
 				catch (Exception exception) {
-					PCSX2Bonus.Tools.ShowMessage("There was an error building the executable.\nReason: " + exception.Message,
-						PCSX2Bonus.MessageType.Error);
+					Legacy.Tools.ShowMessage("There was an error building the executable.\nReason: " + exception.Message,
+						Legacy.MessageType.Error);
 				}
 				if (File.Exists(path) && Path.GetDirectoryName(path).Contains("PCSX2Bonus"))
 					File.Delete(path);
@@ -108,7 +108,7 @@ namespace PCSX2Bonus.Views {
 		}
 
 		private void CreateIcon(string path, bool useDefault = true) {
-			var str = PCSX2Bonus.UserSettings.ImageDir + @"\" + g.FileSafeTitle + ".ico";
+			var str = Legacy.UserSettings.ImageDir + @"\" + g.FileSafeTitle + ".ico";
 			if (useDefault) {
 				using (var stream = new FileStream(str, FileMode.OpenOrCreate, FileAccess.ReadWrite)) {
 					Properties.Resources.icon.Save(stream);
@@ -123,7 +123,7 @@ namespace PCSX2Bonus.Views {
 		}
 
 		private void Setup() {
-			cbUseDefault.IsEnabled = Directory.Exists(PCSX2Bonus.UserSettings.ConfigDir + @"\" + g.Title);
+			cbUseDefault.IsEnabled = Directory.Exists(Legacy.UserSettings.ConfigDir + @"\" + g.Title);
 			cbUseDefaultIcon.Checked += delegate {
 				tbIconPath.IsEnabled = false;
 				btnBrowseIcon.IsEnabled = false;
@@ -149,7 +149,7 @@ namespace PCSX2Bonus.Views {
 		}
 
 		private void wndGenerateExecutable_Loaded(object sender, RoutedEventArgs e) {
-			g = (PCSX2Bonus.Game)Tag;
+			g = (Legacy.Game)Tag;
 			Title = string.Format("Generate Executable [{0}]", g.Title);
 			Setup();
 		}

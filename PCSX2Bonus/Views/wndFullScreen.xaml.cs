@@ -13,10 +13,10 @@ using PCSX2Bonus.Properties;
 
 namespace PCSX2Bonus.Views {
 	public sealed partial class wndFullScreen : INotifyPropertyChanged, IStyleConnector {
-		private PCSX2Bonus.Game _activeGame;
+		private Legacy.Game _activeGame;
 		private ScrollViewer _sv;
 		private DispatcherTimer _timer = new DispatcherTimer();
-		private PCSX2Bonus.Gamepad gamePad;
+		private Legacy.Gamepad gamePad;
 		private bool gameSelected;
 		internal Border infoPanel;
 		private bool infoVisible;
@@ -44,7 +44,7 @@ namespace PCSX2Bonus.Views {
 		}
 
 		private void AquireGamepad() {
-			gamePad = new PCSX2Bonus.Gamepad(this);
+			gamePad = new Legacy.Gamepad(this);
 			if (gamePad.IsValid) {
 				gamePad.ButtonPressed += gamePad_ButtonPressed;
 				gamePad.DirectionChanged += gamePad_DirectionChanged;
@@ -88,8 +88,8 @@ namespace PCSX2Bonus.Views {
 					if (callback == null) {
 						callback = delegate {
 							var element = (ListBoxItem)lbGames.ItemContainerGenerator.ContainerFromItem(ActiveGame);
-							var descendantByName = (Image)PCSX2Bonus.Tools.GetDescendantByName(element, "btnPlay");
-							var image2 = (Image)PCSX2Bonus.Tools.GetDescendantByName(element, "btnInfo");
+							var descendantByName = (Image)Legacy.Tools.GetDescendantByName(element, "btnPlay");
+							var image2 = (Image)Legacy.Tools.GetDescendantByName(element, "btnInfo");
 							if (!gameSelected) {
 								gameSelected = true;
 								element.Tag = "info";
@@ -110,8 +110,8 @@ namespace PCSX2Bonus.Views {
 					if (action2 == null) {
 						action2 = delegate {
 							var element = (ListBoxItem)lbGames.ItemContainerGenerator.ContainerFromItem(ActiveGame);
-							var descendantByName = (Image)PCSX2Bonus.Tools.GetDescendantByName(element, "btnPlay");
-							var image2 = (Image)PCSX2Bonus.Tools.GetDescendantByName(element, "btnInfo");
+							var descendantByName = (Image)Legacy.Tools.GetDescendantByName(element, "btnPlay");
+							var image2 = (Image)Legacy.Tools.GetDescendantByName(element, "btnInfo");
 							if (gameSelected && !infoVisible) {
 								descendantByName.RaiseEvent(MouseLeaveArgs());
 								image2.RaiseEvent(MouseLeaveArgs());
@@ -133,8 +133,8 @@ namespace PCSX2Bonus.Views {
 			base.Dispatcher.Invoke(delegate {
 				if (gameSelected) {
 					var element = (ListBoxItem)lbGames.ItemContainerGenerator.ContainerFromItem(ActiveGame);
-					var descendantByName = (Image)PCSX2Bonus.Tools.GetDescendantByName(element, "btnPlay");
-					var image2 = (Image)PCSX2Bonus.Tools.GetDescendantByName(element, "btnInfo");
+					var descendantByName = (Image)Legacy.Tools.GetDescendantByName(element, "btnPlay");
+					var image2 = (Image)Legacy.Tools.GetDescendantByName(element, "btnInfo");
 					if ((dir == "left") && !infoVisible) {
 						descendantByName.Tag = "selected";
 						image2.Tag = "null";
@@ -205,10 +205,10 @@ namespace PCSX2Bonus.Views {
 			var element = (ListBoxItem)lbGames.ItemContainerGenerator.ContainerFromItem(ActiveGame);
 			if (gameSelected) {
 				if (e.Key == Key.Left) {
-					var descendantByName = (Button)PCSX2Bonus.Tools.GetDescendantByName(element, "btnPlay");
+					var descendantByName = (Button)Legacy.Tools.GetDescendantByName(element, "btnPlay");
 				}
 				else if (e.Key == Key.Right) {
-					var button2 = (Button)PCSX2Bonus.Tools.GetDescendantByName(element, "btnInfo");
+					var button2 = (Button)Legacy.Tools.GetDescendantByName(element, "btnInfo");
 				}
 			}
 			else if (e.Key == Key.Return) {
@@ -219,7 +219,7 @@ namespace PCSX2Bonus.Views {
 
 		public void lbItemMouseEnter(object sender, MouseEventArgs e) {
 			var item = (ListBoxItem)sender;
-			var dataContext = (PCSX2Bonus.Game)item.DataContext;
+			var dataContext = (Legacy.Game)item.DataContext;
 			if ((ActiveGame != null) && (ActiveGame != dataContext)) {
 				var item2 = (ListBoxItem)lbGames.ItemContainerGenerator.ContainerFromItem(ActiveGame);
 				item2.Tag = "null";
@@ -243,7 +243,7 @@ namespace PCSX2Bonus.Views {
 			var span = new TimeSpan(DateTime.Now.Ticks);
 			var milliseconds = span.Milliseconds;
 			if (dir == FocusNavigationDirection.Right) {
-				if ((selectedIndex + 1) < PCSX2Bonus.Game.AllGames.Count) {
+				if ((selectedIndex + 1) < Legacy.Game.AllGames.Count) {
 					selectedIndex++;
 				}
 				if ((selectedIndex + 1) > 0) {
@@ -264,7 +264,7 @@ namespace PCSX2Bonus.Views {
 				element.Focus();
 				lbGames.SelectedItem = lbGames.Items[selectedIndex];
 				lbGames.ScrollIntoView(lbGames.Items[selectedIndex]);
-				ActiveGame = (PCSX2Bonus.Game)lbGames.SelectedItem;
+				ActiveGame = (Legacy.Game)lbGames.SelectedItem;
 			}
 			else if (dir == FocusNavigationDirection.Left) {
 				if (selectedIndex > 0) {
@@ -288,7 +288,7 @@ namespace PCSX2Bonus.Views {
 				item4.Focus();
 				lbGames.SelectedItem = lbGames.Items[selectedIndex];
 				lbGames.ScrollIntoView(lbGames.Items[selectedIndex]);
-				ActiveGame = (PCSX2Bonus.Game)lbGames.SelectedItem;
+				ActiveGame = (Legacy.Game)lbGames.SelectedItem;
 			}
 			else if (dir == FocusNavigationDirection.Down) {
 				var item5 = (ListBoxItem)lbGames.ItemContainerGenerator.ContainerFromIndex(selectedIndex);
@@ -312,7 +312,7 @@ namespace PCSX2Bonus.Views {
 					item5.Focus();
 					lbGames.SelectedItem = lbGames.Items[selectedIndex];
 					lbGames.ScrollIntoView(lbGames.Items[selectedIndex]);
-					ActiveGame = (PCSX2Bonus.Game)lbGames.SelectedItem;
+					ActiveGame = (Legacy.Game)lbGames.SelectedItem;
 				}
 			}
 			else if (dir == FocusNavigationDirection.Up) {
@@ -337,7 +337,7 @@ namespace PCSX2Bonus.Views {
 					item6.Focus();
 					lbGames.SelectedItem = lbGames.Items[selectedIndex];
 					lbGames.ScrollIntoView(lbGames.Items[selectedIndex]);
-					ActiveGame = (PCSX2Bonus.Game)lbGames.SelectedItem;
+					ActiveGame = (Legacy.Game)lbGames.SelectedItem;
 				}
 			}
 		}
@@ -425,7 +425,7 @@ namespace PCSX2Bonus.Views {
 					lbGames.Items.SortDescriptions.Add(new SortDescription("Title", ListSortDirection.Ascending));
 				}
 			}
-			_sv = (ScrollViewer)PCSX2Bonus.Tools.GetDescendantByType(lbGames, typeof(ScrollViewer));
+			_sv = (ScrollViewer)Legacy.Tools.GetDescendantByType(lbGames, typeof(ScrollViewer));
 			_timer.Interval = TimeSpan.FromMilliseconds(0.5);
 			_timer.Tick += _timer_Tick;
 			_timer.Start();
@@ -443,7 +443,7 @@ namespace PCSX2Bonus.Views {
 
 		private void wndFullScreen_PreviewMouseDown(object sender, MouseButtonEventArgs e) {
 			if (e.RightButton != MouseButtonState.Pressed) return;
-			var descendantByType = (ScrollViewer)PCSX2Bonus.Tools.GetDescendantByType(lbGames, typeof(ScrollViewer));
+			var descendantByType = (ScrollViewer)Legacy.Tools.GetDescendantByType(lbGames, typeof(ScrollViewer));
 			if (descendantByType == null) return;
 			switch (descendantByType.VerticalScrollBarVisibility) {
 				case ScrollBarVisibility.Hidden:
@@ -455,7 +455,7 @@ namespace PCSX2Bonus.Views {
 			}
 		}
 
-		public PCSX2Bonus.Game ActiveGame {
+		public Legacy.Game ActiveGame {
 			get {
 				return _activeGame;
 			}

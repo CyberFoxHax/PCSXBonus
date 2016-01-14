@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media.Animation;
-using Extensions = PCSX2Bonus.PCSX2Bonus.Extensions;
+using Extensions = PCSX2Bonus.Legacy.Extensions;
 
 namespace PCSX2Bonus.Views {
 	public sealed partial class wndGameNotify{

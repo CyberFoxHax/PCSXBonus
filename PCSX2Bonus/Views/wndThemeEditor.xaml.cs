@@ -14,7 +14,7 @@ using PCSX2Bonus.CustomControls.ColorPicker;
 
 namespace PCSX2Bonus.Views {
 	public sealed partial class wndThemeEditor {
-		private PCSX2Bonus.EditableTheme _theme = new PCSX2Bonus.EditableTheme();
+		private Legacy.EditableTheme _theme = new Legacy.EditableTheme();
 		internal ComboBox cbEditorType;
 		internal GridViewColumn gvcSerial;
 		internal ListView lvGames;
@@ -74,7 +74,7 @@ namespace PCSX2Bonus.Views {
 			else if (type == typeof(SolidColorBrush)) {
 				var binding2 = new Binding(bindingName) {
 					Mode = BindingMode.TwoWay,
-					Converter = Resources["brushToColorConverter"] as PCSX2Bonus.BrushToColorConverter
+					Converter = Resources["brushToColorConverter"] as Legacy.BrushToColorConverter
 				};
 				var box = new ColorComboBox {
 					Margin = new Thickness(0.0, -4.0, 0.0, 4.0)
@@ -226,7 +226,7 @@ namespace PCSX2Bonus.Views {
 
 		private void LoadListViewEdits() {
 			lvGames.Items.Clear();
-			var newItem = new PCSX2Bonus.DummyGame {
+			var newItem = new Legacy.DummyGame {
 				Title = "DUMMY GAME",
 				Region = "DUMMY REGION",
 				Serial = "DUMMY SERIAL",
@@ -234,7 +234,7 @@ namespace PCSX2Bonus.Views {
 				ImagePath = ""
 			};
 			lvGames.Items.Add(newItem);
-			var game2 = new PCSX2Bonus.DummyGame {
+			var game2 = new Legacy.DummyGame {
 				Title = "DUMMY GAME",
 				Region = "DUMMY REGION",
 				Serial = "DUMMY SERIAL",
@@ -242,7 +242,7 @@ namespace PCSX2Bonus.Views {
 				ImagePath = ""
 			};
 			lvGames.Items.Add(game2);
-			var game3 = new PCSX2Bonus.DummyGame {
+			var game3 = new Legacy.DummyGame {
 				Title = "DUMMY GAME",
 				Region = "DUMMY REGION",
 				Serial = "DUMMY SERIAL",
@@ -250,7 +250,7 @@ namespace PCSX2Bonus.Views {
 				ImagePath = ""
 			};
 			lvGames.Items.Add(game3);
-			var game4 = new PCSX2Bonus.DummyGame {
+			var game4 = new Legacy.DummyGame {
 				Title = "DUMMY GAME",
 				Region = "DUMMY REGION",
 				Serial = "DUMMY SERIAL",
@@ -337,14 +337,14 @@ namespace PCSX2Bonus.Views {
 		private void wndThemeEditor_Closing(object sender, CancelEventArgs e) {
 			if (MessageBox.Show("Save changes?", "PCSX2Bonus", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes) return;
 			Theme.Save(Theme.FilePath);
-			PCSX2Bonus.Tools.ShowMessage("Theme saved! Changes will be applied on next launch", PCSX2Bonus.MessageType.Info);
+			Legacy.Tools.ShowMessage("Theme saved! Changes will be applied on next launch", Legacy.MessageType.Info);
 		}
 
 		private void wndThemeEditor_Loaded(object sender, RoutedEventArgs e) {
 			Setup();
 		}
 
-		public PCSX2Bonus.EditableTheme Theme {
+		public Legacy.EditableTheme Theme {
 			get {
 				return _theme;
 			}

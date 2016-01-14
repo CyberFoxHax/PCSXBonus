@@ -2,17 +2,17 @@
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
-using Extensions = PCSX2Bonus.PCSX2Bonus.Extensions;
+using Extensions = PCSX2Bonus.Legacy.Extensions;
 
 namespace PCSX2Bonus.Views {
 	public sealed partial class wndExecutableSelection{
 		internal Button btnAddNew;
 		internal Button btnCancel;
 		internal Button btnOk;
-		private PCSX2Bonus.Game g;
+		private Legacy.Game g;
 		internal ListBox lbVersions;
 		private string original = string.Empty;
-		private PCSX2Bonus.IniFile pcsx2_ini;
+		private Legacy.IniFile pcsx2_ini;
 		private string selectedExe = string.Empty;
 
 		public wndExecutableSelection() {
@@ -37,7 +37,7 @@ namespace PCSX2Bonus.Views {
 
 		private void btnOk_Click(object sender, RoutedEventArgs e) {
 			if (lbVersions.SelectedItems.Count == 0) {
-				PCSX2Bonus.Tools.ShowMessage("A PCSX2 version must be selected", PCSX2Bonus.MessageType.Error);
+				Legacy.Tools.ShowMessage("A PCSX2 version must be selected", Legacy.MessageType.Error);
 			}
 			else{
 				pcsx2_ini.Write("Additional Executables", "Default",
@@ -47,8 +47,8 @@ namespace PCSX2Bonus.Views {
 		}
 
 		private void Setup() {
-			g = (PCSX2Bonus.Game)base.Tag;
-			pcsx2_ini = new PCSX2Bonus.IniFile(Path.Combine(PCSX2Bonus.UserSettings.ConfigDir, g.FileSafeTitle) + @"\PCSX2Bonus.ini");
+			g = (Legacy.Game)base.Tag;
+			pcsx2_ini = new Legacy.IniFile(Path.Combine(Legacy.UserSettings.ConfigDir, g.FileSafeTitle) + @"\PCSX2Bonus.ini");
 			lbVersions.Items.Add(Path.GetFileNameWithoutExtension(pcsx2_ini.Read("Additional Executables", "Default")));
 			original = pcsx2_ini.Read("Additional Executables", "Default");
 		}

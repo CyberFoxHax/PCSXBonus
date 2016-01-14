@@ -19,7 +19,7 @@ namespace PCSX2Bonus.Views {
 		internal Grid bottomGrid;
 		internal Button btnSave;
 		private readonly CancellationTokenSource _cts = new CancellationTokenSource();
-		private PCSX2Bonus.Game g;
+		private Legacy.Game g;
 		internal Image imgBig;
 		internal TextBlock tbInfo;
 		internal Grid topGrid;
@@ -33,22 +33,22 @@ namespace PCSX2Bonus.Views {
 
 		private void btnSave_Click(object sender, RoutedEventArgs e) {
 			try {
-				if (!Directory.Exists(Path.Combine(PCSX2Bonus.UserSettings.ScreensDir, g.FileSafeTitle)))
-					Directory.CreateDirectory(Path.Combine(PCSX2Bonus.UserSettings.ScreensDir, g.FileSafeTitle));
+				if (!Directory.Exists(Path.Combine(Legacy.UserSettings.ScreensDir, g.FileSafeTitle)))
+					Directory.CreateDirectory(Path.Combine(Legacy.UserSettings.ScreensDir, g.FileSafeTitle));
 				Predicate<BitmapImage> match = i => i == ((BitmapImage)imgBig.Source);
 				var num = Array.FindIndex<BitmapImage>(_imageLinks.ToArray<BitmapImage>(), match);
 				if (num == -1)
 					throw new Exception("index out of bounds");
 				var encoder = new JpegBitmapEncoder();
-				var path = Path.Combine(Path.Combine(PCSX2Bonus.UserSettings.ScreensDir, g.FileSafeTitle), string.Concat(new object[] { g.FileSafeTitle, "-", num, ".jpg" }));
+				var path = Path.Combine(Path.Combine(Legacy.UserSettings.ScreensDir, g.FileSafeTitle), string.Concat(new object[] { g.FileSafeTitle, "-", num, ".jpg" }));
 				encoder.Frames.Add(BitmapFrame.Create((BitmapImage)imgBig.Source));
 				using (var stream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite))
 					encoder.Save(stream);
-				PCSX2Bonus.Toaster.Instance.ShowToast("Successfully saved screenshot to " + path, 0x5dc);
+				Legacy.Toaster.Instance.ShowToast("Successfully saved screenshot to " + path, 0x5dc);
 			}
 			catch (Exception exception) {
 				Console.WriteLine(exception.Message);
-				PCSX2Bonus.Toaster.Instance.ShowToast("Error saving screenshot", 0x5dc);
+				Legacy.Toaster.Instance.ShowToast("Error saving screenshot", 0x5dc);
 			}
 		}
 
@@ -75,16 +75,16 @@ namespace PCSX2Bonus.Views {
 
 		private void wndScreenshots_Closing(object sender, CancelEventArgs e) {
 			_cts.Cancel();
-			PCSX2Bonus.Toaster.Instance.HideToast();
+			Legacy.Toaster.Instance.HideToast();
 			base.DialogResult = true;
 		}
 
 		private async void wndScreenshots_Loaded(object sender, RoutedEventArgs e) {
-			g = (PCSX2Bonus.Game)Tag;
-			Title = "Viewing screenshots for " + ((PCSX2Bonus.Game)Tag).Title;
+			g = (Legacy.Game)Tag;
+			Title = "Viewing screenshots for " + ((Legacy.Game)Tag).Title;
 			imgBig.MouseDown += imgBig_MouseDown;
-			PCSX2Bonus.Toaster.Instance.ShowToast("Loading screenshots");
-			List<string> imageLinks = await PCSX2Bonus.GameManager.FetchScreenshots((PCSX2Bonus.Game)Tag);
+			Legacy.Toaster.Instance.ShowToast("Loading screenshots");
+			List<string> imageLinks = await Legacy.GameManager.FetchScreenshots((Legacy.Game)Tag);
 			if (imageLinks.Count == 0)
 				Close();
 			else {
@@ -103,14 +103,14 @@ namespace PCSX2Bonus.Views {
 								continue;
 							}
 						}
-						var bmi = await PCSX2Bonus.Tools.ImageFromWeb(current, _cts.Token);
+						var bmi = await Legacy.Tools.ImageFromWeb(current, _cts.Token);
 						_imageLinks.Add(bmi);
 					}
 				}
 				finally {
 					enumerator.Dispose();
 				}
-				PCSX2Bonus.Toaster.Instance.HideToast();
+				Legacy.Toaster.Instance.HideToast();
 			}
 		}
 

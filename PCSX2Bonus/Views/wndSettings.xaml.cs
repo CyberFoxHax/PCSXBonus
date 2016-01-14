@@ -12,7 +12,7 @@ using PCSX2Bonus.Properties;
 
 namespace PCSX2Bonus.Views {
 	public sealed partial class wndSettings {
-		private PCSX2Bonus.Gamepad _gamepad;
+		private Legacy.Gamepad _gamepad;
 		internal System.Windows.Controls.Button btnBrowseData;
 		internal System.Windows.Controls.Button btnBrowseDir;
 		internal System.Windows.Controls.Button btnBrowseExe;
@@ -48,7 +48,7 @@ namespace PCSX2Bonus.Views {
 				string[] first = { "inis", "bios", "logs", "memcards", "snaps", "sstates" };
 				var second = (from d in Directory.GetDirectories(dialog.SelectedPath) select new DirectoryInfo(d).Name).ToArray<string>();
 				if (first.Except(second).Any()) {
-					PCSX2Bonus.Tools.ShowMessage("A required folder has not been found!", PCSX2Bonus.MessageType.Error);
+					Legacy.Tools.ShowMessage("A required folder has not been found!", Legacy.MessageType.Error);
 				}
 				else {
 					tbPcsx2DataDir.Text = dialog.SelectedPath;
@@ -109,12 +109,12 @@ namespace PCSX2Bonus.Views {
 
 		private void btnEditTheme_Click(object sender, RoutedEventArgs e) {
 			if (cbTheme.SelectedItem == null) {
-				PCSX2Bonus.Tools.ShowMessage("No theme selected", PCSX2Bonus.MessageType.Error);
+				Legacy.Tools.ShowMessage("No theme selected", Legacy.MessageType.Error);
 			}
 			else {
 				var xmlFile = cbTheme.SelectedItem.ToString();
-				PCSX2Bonus.UserStyles.LoadTheme(xmlFile);
-				new wndThemeEditor { Tag = Path.Combine(PCSX2Bonus.UserSettings.ThemesDir, xmlFile) }.Show();
+				Legacy.UserStyles.LoadTheme(xmlFile);
+				new wndThemeEditor { Tag = Path.Combine(Legacy.UserSettings.ThemesDir, xmlFile) }.Show();
 			}
 		}
 
@@ -134,19 +134,19 @@ namespace PCSX2Bonus.Views {
 
 		private void cbEnableGamepad_Checked(object sender, RoutedEventArgs e) {
 			if (cbEnableGamepad.IsChecked != null && cbEnableGamepad.IsChecked.Value) {
-				_gamepad = new PCSX2Bonus.Gamepad(this);
+				_gamepad = new Legacy.Gamepad(this);
 				if (_gamepad.IsValid) return;
 				cbEnableGamepad.IsChecked = false;
-				PCSX2Bonus.Tools.ShowMessage("Error enabling gamepad", PCSX2Bonus.MessageType.Error);
+				Legacy.Tools.ShowMessage("Error enabling gamepad", Legacy.MessageType.Error);
 			}
 			else {
-				PCSX2Bonus.Tools.ShowMessage("Error enabling gamepad [Error code: 10045]", PCSX2Bonus.MessageType.Error);
+				Legacy.Tools.ShowMessage("Error enabling gamepad [Error code: 10045]", Legacy.MessageType.Error);
 				cbEnableGamepad.IsChecked = false;
 			}
 		}
 
 		private void FetchThemes() {
-			foreach (var str in Directory.GetFiles(PCSX2Bonus.UserSettings.ThemesDir, "*.xml").ToArray()) {
+			foreach (var str in Directory.GetFiles(Legacy.UserSettings.ThemesDir, "*.xml").ToArray()) {
 				cbTheme.Items.Add(Path.GetFileName(str));
 			}
 			cbTheme.SelectedItem = Settings.Default.defaultTheme;

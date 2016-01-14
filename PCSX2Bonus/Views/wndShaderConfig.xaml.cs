@@ -3,16 +3,16 @@ using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
 using System.Linq;
-using Extensions = PCSX2Bonus.PCSX2Bonus.Extensions;
+using Extensions = PCSX2Bonus.Legacy.Extensions;
 
 namespace PCSX2Bonus.Views {
 	public sealed partial class wndShaderConfig {
 		internal Button btnAddNew;
 		internal Button btnCancel;
 		internal Button btnOk;
-		private PCSX2Bonus.Game g;
+		private Legacy.Game g;
 		internal ListBox lbShaders;
-		private PCSX2Bonus.IniFile pcsx2_ini;
+		private Legacy.IniFile pcsx2_ini;
 
 		public wndShaderConfig() {
 			InitializeComponent();
@@ -27,11 +27,11 @@ namespace PCSX2Bonus.Views {
 			if (dialog.ShowDialog() != true) return;
 			var newItem = new ListViewItem {
 				Content = Extensions.FileNameNoExt(dialog.FileName),
-				Tag = Path.Combine(PCSX2Bonus.UserSettings.ShadersDir, Path.GetFileName(dialog.FileName))
+				Tag = Path.Combine(Legacy.UserSettings.ShadersDir, Path.GetFileName(dialog.FileName))
 			};
 			lbShaders.Items.Add(newItem);
 			try {
-				File.Copy(dialog.FileName, Path.Combine(PCSX2Bonus.UserSettings.ShadersDir, Path.GetFileName(dialog.FileName)), true);
+				File.Copy(dialog.FileName, Path.Combine(Legacy.UserSettings.ShadersDir, Path.GetFileName(dialog.FileName)), true);
 			}
 			catch {
 			}
@@ -43,7 +43,7 @@ namespace PCSX2Bonus.Views {
 
 		private void btnOk_Click(object sender, RoutedEventArgs e) {
 			if (lbShaders.SelectedItems.Count == 0) {
-				PCSX2Bonus.Tools.ShowMessage("A shader must be selected!", PCSX2Bonus.MessageType.Error);
+				Legacy.Tools.ShowMessage("A shader must be selected!", Legacy.MessageType.Error);
 			}
 			else {
 				pcsx2_ini.Read("Shader", "Default");
@@ -54,10 +54,10 @@ namespace PCSX2Bonus.Views {
 		}
 
 		private void Setup() {
-			g = (PCSX2Bonus.Game)Tag;
+			g = (Legacy.Game)Tag;
 			lbShaders.DisplayMemberPath = "Text";
-			pcsx2_ini = new PCSX2Bonus.IniFile(Path.Combine(PCSX2Bonus.UserSettings.ConfigDir, g.FileSafeTitle) + @"\PCSX2Bonus.ini");
-			foreach (var newItem in Directory.GetFiles(PCSX2Bonus.UserSettings.ShadersDir).Select(str => new ListViewItem {
+			pcsx2_ini = new Legacy.IniFile(Path.Combine(Legacy.UserSettings.ConfigDir, g.FileSafeTitle) + @"\PCSX2Bonus.ini");
+			foreach (var newItem in Directory.GetFiles(Legacy.UserSettings.ShadersDir).Select(str => new ListViewItem {
 				Content = Extensions.FileNameNoExt(str),
 				Tag = str
 			})){

@@ -16,16 +16,16 @@ using System.Windows.Markup;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using PCSX2Bonus.Properties;
-using Extensions = PCSX2Bonus.PCSX2Bonus.Extensions;
+using Extensions = PCSX2Bonus.Legacy.Extensions;
 
 namespace PCSX2Bonus.Views {
 	public sealed partial class MainWindow : IStyleConnector {
 		private readonly NotifyIcon _notifyIcon = new NotifyIcon();
 		private DispatcherTimer _t;
 		internal System.Windows.Controls.Button btnSaveWidePatch;
-		internal PCSX2Bonus.ImageButton btnStacked;
-		internal PCSX2Bonus.ImageButton btnTile;
-		internal PCSX2Bonus.ImageButton btnTV;
+		internal Legacy.ImageButton btnStacked;
+		internal Legacy.ImageButton btnTile;
+		internal Legacy.ImageButton btnTV;
 		internal Grid gWideScreenResults;
 		internal Image imgPreview;
 		internal System.Windows.Controls.ListView lvGames;
@@ -49,13 +49,13 @@ namespace PCSX2Bonus.Views {
 			const int num = 500;
 			for (var i = num; i < (num + 100); i++) {
 				var result = 0;
-				var str = PCSX2Bonus.GameManager.GameDatabase[i];
+				var str = Legacy.GameManager.GameDatabase[i];
 				var source = str.Trim().Split(new[] { '\n' });
 				var str2 = source.FirstOrDefault(s => s.Contains("Compat"));
 				if (!string.IsNullOrWhiteSpace(str2)) {
 					result = int.TryParse(str2.Replace("Compat = ", ""), out result) ? result : 0;
 				}
-				var g = new PCSX2Bonus.Game {
+				var g = new Legacy.Game {
 					Serial = source[0],
 					Title = source[1],
 					Region = source[2],
@@ -64,8 +64,8 @@ namespace PCSX2Bonus.Views {
 					ImagePath = "",
 					Compatibility = result
 				};
-				if (!PCSX2Bonus.Game.AllGames.Any(game => (game.Serial == g.Serial))) {
-					PCSX2Bonus.GameManager.AddToLibrary(g);
+				if (!Legacy.Game.AllGames.Any(game => (game.Serial == g.Serial))) {
+					Legacy.GameManager.AddToLibrary(g);
 				}
 			}
 		}
@@ -75,7 +75,7 @@ namespace PCSX2Bonus.Views {
 				Multiselect = true
 			};
 			if (ofd.ShowDialog() == true) {
-				await PCSX2Bonus.GameManager.AddGamesFromImages(ofd.FileNames);
+				await Legacy.GameManager.AddGamesFromImages(ofd.FileNames);
 			}
 		}
 
@@ -97,7 +97,7 @@ namespace PCSX2Bonus.Views {
 		private void CheckSettings() {
 			if ((!Extensions.IsEmpty(Settings.Default.pcsx2Dir) && !Extensions.IsEmpty(Settings.Default.pcsx2DataDir)) &&
 				(Directory.Exists(Settings.Default.pcsx2Dir) && Directory.Exists(Settings.Default.pcsx2DataDir))) return;
-			PCSX2Bonus.Tools.ShowMessage("Please select the directory containing PCSX2 and the PCSX2 data directory", PCSX2Bonus.MessageType.Info);
+			Legacy.Tools.ShowMessage("Please select the directory containing PCSX2 and the PCSX2 data directory", Legacy.MessageType.Info);
 			new wndSetup().ShowDialog();
 		}
 
@@ -121,8 +121,8 @@ namespace PCSX2Bonus.Views {
 
 		private void DeleteSaveStates() {
 			if (lvSaveStates.SelectedItems.Count == 0) return;
-			var list = lvSaveStates.ItemsSource.Cast<PCSX2Bonus.SaveState>().ToList<PCSX2Bonus.SaveState>();
-			foreach (var item in lvSaveStates.SelectedItems.Cast<PCSX2Bonus.SaveState>()) {
+			var list = lvSaveStates.ItemsSource.Cast<Legacy.SaveState>().ToList<Legacy.SaveState>();
+			foreach (var item in lvSaveStates.SelectedItems.Cast<Legacy.SaveState>()) {
 				File.Delete(item.Location);
 				list.Remove(item);
 			}
@@ -133,12 +133,12 @@ namespace PCSX2Bonus.Views {
 			_t.Stop();
 			if (!lvGames.IsVisible) return;
 			var query = tbSearch.Text;
-			var defaultView = CollectionViewSource.GetDefaultView(PCSX2Bonus.Game.AllGames);
+			var defaultView = CollectionViewSource.GetDefaultView(Legacy.Game.AllGames);
 			if (Extensions.IsEmpty(query) || (query == "Search"))
 				defaultView.Filter = null;
 			else {
-				defaultView.Filter = (Predicate<object>)Delegate.Combine(defaultView.Filter, (Predicate<object>)(o => Extensions.Contains(((PCSX2Bonus.Game)o).Title, query, (StringComparison) StringComparison.InvariantCultureIgnoreCase)));
-				((ScrollViewer)PCSX2Bonus.Tools.GetDescendantByType(lvGames, typeof(ScrollViewer))).ScrollToVerticalOffset(0.0);
+				defaultView.Filter = (Predicate<object>)Delegate.Combine(defaultView.Filter, (Predicate<object>)(o => Extensions.Contains(((Legacy.Game)o).Title, query, (StringComparison) StringComparison.InvariantCultureIgnoreCase)));
+				((ScrollViewer)Legacy.Tools.GetDescendantByType(lvGames, typeof(ScrollViewer))).ScrollToVerticalOffset(0.0);
 			}
 		}
 
@@ -161,11 +161,11 @@ namespace PCSX2Bonus.Views {
 			gWideScreenResults.IsHitTestVisible = false;
 		}
 
-		public void LaunchGame(PCSX2Bonus.Game g, bool tvMode = false) {
+		public void LaunchGame(Legacy.Game g, bool tvMode = false) {
 			Process p;
 			DateTime timeOpened;
 			if (!File.Exists(g.Location)) {
-				PCSX2Bonus.Tools.ShowMessage("Unable to find image file!", PCSX2Bonus.MessageType.Error);
+				Legacy.Tools.ShowMessage("Unable to find image file!", Legacy.MessageType.Error);
 				if (tvMode) {
 					var window = System.Windows.Application.Current.Windows.Cast<Window>().FirstOrDefault<Window>(w => w.Title == "wndFullScreen");
 					if (window != null) {
@@ -175,13 +175,13 @@ namespace PCSX2Bonus.Views {
 			}
 			else {
 				p = new Process();
-				var path = PCSX2Bonus.UserSettings.RootDir + string.Format(@"\Configs\{0}", g.FileSafeTitle);
+				var path = Legacy.UserSettings.RootDir + string.Format(@"\Configs\{0}", g.FileSafeTitle);
 				var str = Directory.Exists(path) ? string.Format(" --cfgpath={0}{2}{0} {0}{1}{0}", "\"", g.Location, path) : string.Format(" {0}{1}{0}", "\"", g.Location);
 				str = str.Replace(@"\\", @"\");
 				var src = string.Empty;
 				var str4 = Settings.Default.pcsx2Dir;
 				if (File.Exists(path + @"\PCSX2Bonus.ini")) {
-					var file = new PCSX2Bonus.IniFile(path + @"\PCSX2Bonus.ini");
+					var file = new Legacy.IniFile(path + @"\PCSX2Bonus.ini");
 					var str5 = file.Read("Additional Executables", "Default");
 					var str6 = !Extensions.IsEmpty(str5) ? str5 : Settings.Default.pcsx2Exe;
 					str4 = !Extensions.IsEmpty(str5) ? Path.GetDirectoryName(str5) : Settings.Default.pcsx2Dir;
@@ -208,7 +208,7 @@ namespace PCSX2Bonus.Views {
 							File.Copy(src, Path.Combine(str4, "shader.fx"), true);
 						}
 						catch (Exception exception) {
-							PCSX2Bonus.Tools.ShowMessage("Could not save shader file! Details: " + exception.Message, PCSX2Bonus.MessageType.Error);
+							Legacy.Tools.ShowMessage("Could not save shader file! Details: " + exception.Message, Legacy.MessageType.Error);
 						}
 					}
 				}
@@ -219,7 +219,7 @@ namespace PCSX2Bonus.Views {
 					System.Windows.Application.Current.Dispatcher.Invoke(delegate {
 						var now = DateTime.Now;
 						g.TimePlayed = g.TimePlayed.Add(now.Subtract(timeOpened));
-						var element = PCSX2Bonus.UserSettings.xGames.Descendants("Game").FirstOrDefault(x => {
+						var element = Legacy.UserSettings.xGames.Descendants("Game").FirstOrDefault(x => {
 							var xElement1 = x.Element("Name");
 							return xElement1 != null && xElement1.Value == g.Title;
 						});
@@ -269,7 +269,7 @@ namespace PCSX2Bonus.Views {
 			if ((count > 1) || (count == 0)) return;
 			lvGames.Tag = lvGames.SelectedItem;
 			var root = (System.Windows.Controls.ListViewItem)lvGames.ItemContainerGenerator.ContainerFromItem(lvGames.SelectedItem);
-			var image = PCSX2Bonus.Tools.FindByName("imgGameCover", root) as Image;
+			var image = Legacy.Tools.FindByName("imgGameCover", root) as Image;
 			if (image != null) {
 				imgPreview.Source = image.Source;
 			}
@@ -277,7 +277,7 @@ namespace PCSX2Bonus.Views {
 
 		public void LviDoubleClick(object sender, MouseButtonEventArgs e) {
 			var source = (System.Windows.Controls.ListViewItem)e.Source;
-			var dataContext = (PCSX2Bonus.Game)source.DataContext;
+			var dataContext = (Legacy.Game)source.DataContext;
 			LaunchGame(dataContext);
 		}
 
@@ -319,23 +319,23 @@ namespace PCSX2Bonus.Views {
 			ShowScrapeResults();
 		}
 
-		private static void RemoveSelectedGames(IEnumerable<PCSX2Bonus.Game> games) {
+		private static void RemoveSelectedGames(IEnumerable<Legacy.Game> games) {
 			foreach (var game in games)
-				PCSX2Bonus.GameManager.Remove(game);
+				Legacy.GameManager.Remove(game);
 		}
 
 		private async void Rescrape() {
-			var selectedItem = (PCSX2Bonus.GameSearchResult)lvScrape.SelectedItem;
-			var tag = (PCSX2Bonus.Game)lvGames.Tag;
+			var selectedItem = (Legacy.GameSearchResult)lvScrape.SelectedItem;
+			var tag = (Legacy.Game)lvGames.Tag;
 			var mbr = System.Windows.MessageBox.Show(string.Format("Are you sure you want to update the game {0} to {1}?", tag.Title, selectedItem.Name), "PCSX2Bonus - Confirm Game Update", MessageBoxButton.YesNo, MessageBoxImage.Question);
 			if (mbr != MessageBoxResult.No) {
 				lvScrape.IsHitTestVisible = false;
-				PCSX2Bonus.Toaster.Instance.ShowToast("Fetching info for: " + selectedItem.Name);
+				Legacy.Toaster.Instance.ShowToast("Fetching info for: " + selectedItem.Name);
 			}
 			else
 				return;
-			await PCSX2Bonus.GameManager.ReFetchInfo(tag, selectedItem.Link);
-			PCSX2Bonus.Toaster.Instance.ShowToast("Successfully updated info for: " + tag.Title, 0xbb8);
+			await Legacy.GameManager.ReFetchInfo(tag, selectedItem.Link);
+			Legacy.Toaster.Instance.ShowToast("Successfully updated info for: " + tag.Title, 0xbb8);
 			HideRescrape();
 		}
 
@@ -370,37 +370,37 @@ namespace PCSX2Bonus.Views {
 				var files = (
 					from s in data
 					let extension = Path.GetExtension(s)
-					where PCSX2Bonus.GameData.AcceptableFormats.Any(frm => extension != null && extension.Equals(frm, StringComparison.InvariantCultureIgnoreCase))
+					where Legacy.GameData.AcceptableFormats.Any(frm => extension != null && extension.Equals(frm, StringComparison.InvariantCultureIgnoreCase))
 					select s
 				).ToArray<string>();
-				await PCSX2Bonus.GameManager.AddGamesFromImages(files);
+				await Legacy.GameManager.AddGamesFromImages(files);
 			};
 			miPlay.Click += delegate {
 				var count = lvGames.SelectedItems.Count;
 				if ((count != 0) && (count <= 1))
-					LaunchGame((PCSX2Bonus.Game)lvGames.SelectedItem);
+					LaunchGame((Legacy.Game)lvGames.SelectedItem);
 			};
 			miRemove.Click += delegate {
-				var games = lvGames.SelectedItems.Cast<PCSX2Bonus.Game>().ToList<PCSX2Bonus.Game>();
+				var games = lvGames.SelectedItems.Cast<Legacy.Game>().ToList<Legacy.Game>();
 				RemoveSelectedGames(games);
 			};
 			miSaveStates.Click += (o, e) => ShowSaveStates();
 			miWideScreen.Click += (o, e) => ShowWideScreenResults();
 			_t = new DispatcherTimer(TimeSpan.FromMilliseconds(200.0), DispatcherPriority.DataBind, Filter, Dispatcher);
 			btnSaveWidePatch.Click += async delegate {
-				var g = (PCSX2Bonus.Game)lvGames.Tag;
+				var g = (Legacy.Game)lvGames.Tag;
 				if (g == null) return;
-				var crc = await PCSX2Bonus.GameManager.FetchCRC(g);
+				var crc = await Legacy.GameManager.FetchCRC(g);
 				if (!Directory.Exists(Settings.Default.pcsx2Dir + @"\Cheats"))
 					Directory.CreateDirectory(Settings.Default.pcsx2Dir + @"\Cheats");
 				var contents = new TextRange(rtbResults.Document.ContentStart, rtbResults.Document.ContentEnd).Text;
 				try {
 					File.WriteAllText(Settings.Default.pcsx2Dir + @"\Cheats\" + crc + ".pnach", contents);
-					PCSX2Bonus.Toaster.Instance.ShowToast(string.Format("Successfully saved patch for {0} as {1}.pnatch", g.Title, crc), 0xdac);
+					Legacy.Toaster.Instance.ShowToast(string.Format("Successfully saved patch for {0} as {1}.pnatch", g.Title, crc), 0xdac);
 					HideWidescreenResults();
 				}
 				catch (Exception exception) {
-					PCSX2Bonus.Toaster.Instance.ShowToast("An error occured when trying to save the patch: " + exception.Message);
+					Legacy.Toaster.Instance.ShowToast("An error occured when trying to save the patch: " + exception.Message);
 				}
 			};
 			btnStacked.Click += delegate {
@@ -445,12 +445,12 @@ namespace PCSX2Bonus.Views {
 				tbSearch.Text = "Search";
 				lvGames.Focus();
 			};
-			await PCSX2Bonus.GameManager.BuildDatabase();
-			PCSX2Bonus.GameManager.GenerateDirectories();
-			PCSX2Bonus.GameManager.LoadXml();
+			await Legacy.GameManager.BuildDatabase();
+			Legacy.GameManager.GenerateDirectories();
+			Legacy.GameManager.LoadXml();
 			Console.WriteLine("loaded xml");
-			await PCSX2Bonus.GameManager.GenerateUserLibrary();
-			PCSX2Bonus.GameManager.UpdateGamesToLatestCompatibility();
+			await Legacy.GameManager.GenerateUserLibrary();
+			Legacy.GameManager.UpdateGamesToLatestCompatibility();
 			var defaultView = Settings.Default.defaultView;
 			if (defaultView != null) {
 				if (defaultView != "Stacked") {
@@ -491,9 +491,9 @@ namespace PCSX2Bonus.Views {
 		}
 
 		private async void ShowSaveStates() {
-			var selectedItem = (PCSX2Bonus.Game)lvGames.SelectedItem;
+			var selectedItem = (Legacy.Game)lvGames.SelectedItem;
 			if (selectedItem != null) {
-				var states = PCSX2Bonus.GameManager.FetchSaveStates(selectedItem);
+				var states = Legacy.GameManager.FetchSaveStates(selectedItem);
 				if (states.Count != 0) {
 					lvSaveStates.Visibility = Visibility.Visible;
 					lvSaveStates.ItemsSource = states;
@@ -502,24 +502,24 @@ namespace PCSX2Bonus.Views {
 					await SlideOut();
 				}
 				else {
-					PCSX2Bonus.Toaster.Instance.ShowToast("No save states found", 0x9c4);
+					Legacy.Toaster.Instance.ShowToast("No save states found", 0x9c4);
 				}
 			}
 		}
 
 		private async void ShowScrapeResults() {
 			lvScrape.ItemsSource = null;
-			var selectedItem = (PCSX2Bonus.Game)lvGames.SelectedItem;
+			var selectedItem = (Legacy.Game)lvGames.SelectedItem;
 			if (selectedItem != null) {
 				lvScrape.Visibility = Visibility.Visible;
 				lvScrape.IsHitTestVisible = true;
 				lvGames.UnselectAll();
 				lvGames.IsHitTestVisible = false;
-				PCSX2Bonus.Toaster.Instance.ShowToast("Fetching results for: " + selectedItem.Title);
-				var results = await PCSX2Bonus.GameManager.FetchSearchResults(selectedItem);
+				Legacy.Toaster.Instance.ShowToast("Fetching results for: " + selectedItem.Title);
+				var results = await Legacy.GameManager.FetchSearchResults(selectedItem);
 				if (results.Count == 0) {
 					HideRescrape();
-					PCSX2Bonus.Toaster.Instance.ShowToast("Error fetching results", 0x9c4);
+					Legacy.Toaster.Instance.ShowToast("Error fetching results", 0x9c4);
 				}
 				else {
 					lvScrape.ItemsSource = results;
@@ -527,20 +527,20 @@ namespace PCSX2Bonus.Views {
 					lvScrape.Items.SortDescriptions.Add(new SortDescription("Rating", ListSortDirection.Ascending));
 					Console.WriteLine(lvScrape.Items.Count);
 					await SlideOut();
-					PCSX2Bonus.Toaster.Instance.HideToast();
+					Legacy.Toaster.Instance.HideToast();
 				}
 			}
 		}
 
 		private async void ShowWideScreenResults() {
-			var selectedItem = (PCSX2Bonus.Game)lvGames.SelectedItem;
+			var selectedItem = (Legacy.Game)lvGames.SelectedItem;
 			if (selectedItem != null) {
 				rtbResults.Document.Blocks.Clear();
 				lvGames.IsHitTestVisible = false;
-				PCSX2Bonus.Toaster.Instance.ShowToast("Fetching wide screen patches");
-				var src = await PCSX2Bonus.GameManager.FetchWideScreenPatches(selectedItem);
+				Legacy.Toaster.Instance.ShowToast("Fetching wide screen patches");
+				var src = await Legacy.GameManager.FetchWideScreenPatches(selectedItem);
 				if (Extensions.IsEmpty(src)) {
-					PCSX2Bonus.Toaster.Instance.ShowToast("No patches found", 0x5dc);
+					Legacy.Toaster.Instance.ShowToast("No patches found", 0x5dc);
 					lvGames.IsHitTestVisible = true;
 				}
 				else {
@@ -549,7 +549,7 @@ namespace PCSX2Bonus.Views {
 					gWideScreenResults.IsHitTestVisible = true;
 					lvGames.UnselectAll();
 					await SlideOut();
-					PCSX2Bonus.Toaster.Instance.HideToast();
+					Legacy.Toaster.Instance.HideToast();
 				}
 			}
 		}
@@ -642,9 +642,9 @@ namespace PCSX2Bonus.Views {
 				AddDummies();
 			}
 			else if (func(str, "clear library")) {
-				var list = PCSX2Bonus.Game.AllGames.ToList();
+				var list = Legacy.Game.AllGames.ToList();
 				foreach (var game2 in list)
-					PCSX2Bonus.GameManager.Remove(game2);
+					Legacy.GameManager.Remove(game2);
 			}
 			else if (func(str, "crash"))
 				CrashMe();
@@ -656,8 +656,8 @@ namespace PCSX2Bonus.Views {
 		}
 
 		private void Window_Closing(object sender, CancelEventArgs e) {
-			if (PCSX2Bonus.UserSettings.xGames != null) {
-				PCSX2Bonus.UserSettings.xGames.Save(PCSX2Bonus.UserSettings.BonusXml);
+			if (Legacy.UserSettings.xGames != null) {
+				Legacy.UserSettings.xGames.Save(Legacy.UserSettings.BonusXml);
 			}
 			SaveWindowSettings();
 			System.Windows.Application.Current.Shutdown();

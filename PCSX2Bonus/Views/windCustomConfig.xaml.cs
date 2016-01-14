@@ -12,7 +12,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
 using PCSX2Bonus.Properties;
-using Extensions = PCSX2Bonus.PCSX2Bonus.Extensions;
+using Extensions = PCSX2Bonus.Legacy.Extensions;
 
 namespace PCSX2Bonus.Views {
 	public sealed class wndCustomConfig : Window, IComponentConnector {
@@ -26,11 +26,11 @@ namespace PCSX2Bonus.Views {
 		internal CheckBox cbNoGui;
 		internal CheckBox cbNoHacks;
 		internal CheckBox cbUseCd;
-		private PCSX2Bonus.Game g;
+		private Legacy.Game g;
 		internal ListBox lbBios;
-		private PCSX2Bonus.IniFile pcsx2_ini;
-		private PCSX2Bonus.IniFile pcsx2_ui;
-		private PCSX2Bonus.IniFile pcsx2_vm;
+		private Legacy.IniFile pcsx2_ini;
+		private Legacy.IniFile pcsx2_ui;
+		private Legacy.IniFile pcsx2_vm;
 		internal TextBlock tbInfo;
 
 		public wndCustomConfig() {
@@ -49,7 +49,7 @@ namespace PCSX2Bonus.Views {
 
 		private void btnConfig_Click(object sender, RoutedEventArgs e) {
 			var mainWindow = Application.Current.MainWindow;
-			var str = Path.Combine(PCSX2Bonus.UserSettings.ConfigDir, g.FileSafeTitle);
+			var str = Path.Combine(Legacy.UserSettings.ConfigDir, g.FileSafeTitle);
 			var p = new Process {
 				EnableRaisingEvents = true
 			};
@@ -61,7 +61,7 @@ namespace PCSX2Bonus.Views {
 					p.Dispose();
 				}
 				Application.Current.Dispatcher.Invoke(delegate {
-					PCSX2Bonus.Toaster.Instance.ShowToast("Emulator Settings Saved", 0xdac);
+					Legacy.Toaster.Instance.ShowToast("Emulator Settings Saved", 0xdac);
 					mainWindow.Show();
 					UpdateSettings();
 					ShowDialog();
@@ -82,7 +82,7 @@ namespace PCSX2Bonus.Views {
 			var str = string.Empty;
 			foreach (var str2 in text.Split(new char[] { ' ' })) {
 				if (str2.Contains("ROMconf")) {
-					var str3 = PCSX2Bonus.Tools.RemoveInvalidXMLChars(str2);
+					var str3 = Legacy.Tools.RemoveInvalidXMLChars(str2);
 					var s = str3.Remove(str3.IndexOf("-")).Remove(0, 1).Insert(4, "/").Insert(7, "/");
 					var str5 = string.Empty;
 					try {
@@ -126,7 +126,7 @@ namespace PCSX2Bonus.Views {
 
 		private async void LoadBios() {
 			var currentBios = Extensions.Unescape(pcsx2_ui.Read("Filenames", "BIOS"));
-			var bioses = new List<PCSX2Bonus.Bios>();
+			var bioses = new List<Legacy.Bios>();
 			await Task.Run(delegate {
 				foreach (var str in Directory.GetFiles(Settings.Default.pcsx2DataDir + @"\bios")) {
 					using (var reader = new StreamReader(str)) {
@@ -141,7 +141,7 @@ namespace PCSX2Bonus.Views {
 								if (Extensions.IsEmpty(str4)) {
 									str4 = Extensions.Between(src, (string) "OSDSYS", (string) "@");
 								}
-								var item = new PCSX2Bonus.Bios {
+								var item = new Legacy.Bios {
 									DisplayInfo = GetValue(str4),
 									Tag = str,
 									Location = str
@@ -157,7 +157,7 @@ namespace PCSX2Bonus.Views {
 			try {
 				while (enumerator.MoveNext()) {
 					var current = enumerator.Current;
-					var bios = (PCSX2Bonus.Bios)current;
+					var bios = (Legacy.Bios)current;
 					if (bios.Tag.ToString() != currentBios) continue;
 					lbBios.SelectedItem = bioses;
 					return;
@@ -184,15 +184,15 @@ namespace PCSX2Bonus.Views {
 			pcsx2_ini.Write("Boot", "EnableCheats", str5);
 			pcsx2_vm.Write("EmuCore", "EnableCheats", str5);
 			if (lbBios.SelectedItem != null) {
-				pcsx2_ui.Write("Filenames", "BIOS", Extensions.Escape(((PCSX2Bonus.Bios)lbBios.SelectedItem).Tag.ToString()));
+				pcsx2_ui.Write("Filenames", "BIOS", Extensions.Escape(((Legacy.Bios)lbBios.SelectedItem).Tag.ToString()));
 			}
 		}
 
 		private void Setup() {
-			g = (PCSX2Bonus.Game)base.Tag;
-			pcsx2_ini = new PCSX2Bonus.IniFile(Path.Combine(PCSX2Bonus.UserSettings.ConfigDir, g.FileSafeTitle) + @"\PCSX2Bonus.ini");
-			pcsx2_vm = new PCSX2Bonus.IniFile(Path.Combine(PCSX2Bonus.UserSettings.ConfigDir, Path.Combine(g.FileSafeTitle, "PCSX2_vm.ini")));
-			pcsx2_ui = new PCSX2Bonus.IniFile(Path.Combine(PCSX2Bonus.UserSettings.ConfigDir, Path.Combine(g.FileSafeTitle, "PCSX2_ui.ini")));
+			g = (Legacy.Game)base.Tag;
+			pcsx2_ini = new Legacy.IniFile(Path.Combine(Legacy.UserSettings.ConfigDir, g.FileSafeTitle) + @"\PCSX2Bonus.ini");
+			pcsx2_vm = new Legacy.IniFile(Path.Combine(Legacy.UserSettings.ConfigDir, Path.Combine(g.FileSafeTitle, "PCSX2_vm.ini")));
+			pcsx2_ui = new Legacy.IniFile(Path.Combine(Legacy.UserSettings.ConfigDir, Path.Combine(g.FileSafeTitle, "PCSX2_ui.ini")));
 			base.Title = "Viewing configuration for " + g.Title;
 			UpdateSettings();
 			LoadBios();

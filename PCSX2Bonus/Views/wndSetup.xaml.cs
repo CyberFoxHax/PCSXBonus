@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
 using PCSX2Bonus.Properties;
-using Extensions = PCSX2Bonus.PCSX2Bonus.Extensions;
+using Extensions = PCSX2Bonus.Legacy.Extensions;
 
 namespace PCSX2Bonus.Views {
 	public sealed partial class wndSetup {
@@ -34,7 +34,7 @@ namespace PCSX2Bonus.Views {
 				break;
 			}
 			if (!flag)
-				PCSX2Bonus.Tools.ShowMessage("PCSX2 executable could not be found!", PCSX2Bonus.MessageType.Error);
+				Legacy.Tools.ShowMessage("PCSX2 executable could not be found!", Legacy.MessageType.Error);
 			else {
 				Settings.Default.pcsx2Exe = str;
 				tbPcsx2Dir.Text = dialog.SelectedPath;
@@ -50,7 +50,7 @@ namespace PCSX2Bonus.Views {
 			var first = new[] { "inis", "bios", "logs", "memcards", "snaps", "sstates" };
 			var second = (from d in Directory.GetDirectories(dialog.SelectedPath) select new DirectoryInfo(d).Name).ToArray();
 			if (first.Except(second).Any()) {
-				PCSX2Bonus.Tools.ShowMessage("A required folder has not been found!", PCSX2Bonus.MessageType.Error);
+				Legacy.Tools.ShowMessage("A required folder has not been found!", Legacy.MessageType.Error);
 			}
 			else {
 				tbPcsx2DataDir.Text = dialog.SelectedPath;
@@ -59,7 +59,7 @@ namespace PCSX2Bonus.Views {
 
 		private void btnOk_Click(object sender, RoutedEventArgs e) {
 			if (Extensions.IsEmpty(tbPcsx2DataDir.Text) || Extensions.IsEmpty(tbPcsx2Dir.Text)) {
-				PCSX2Bonus.Tools.ShowMessage("Required fields cannot be empty!", PCSX2Bonus.MessageType.Error);
+				Legacy.Tools.ShowMessage("Required fields cannot be empty!", Legacy.MessageType.Error);
 			}
 			else {
 				Settings.Default.pcsx2Dir = tbPcsx2Dir.Text;
