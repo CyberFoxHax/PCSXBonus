@@ -4,20 +4,20 @@
         xmlns:legacy="clr-namespace:PCSX2Bonus.Legacy"
         Title="MainWindow" Height="368.093" Width="491.036" Closing="Window_Closing">
 	<Grid>
-		<Button x:Name="btnSaveWidePatch"/>
-		<legacy:ImageButton x:Name="btnStacked" />
-		<legacy:ImageButton x:Name="btnTile" />
-		<legacy:ImageButton x:Name="btnTV" />
-		<Grid x:Name="gWideScreenResults" />
-		<Image x:Name="imgPreview" />
-		<ListView x:Name="lvGames"></ListView>
-		<ListView x:Name="lvSaveStates"></ListView>
-		<ListView x:Name="lvScrape"></ListView>
-		<RichTextBox x:Name="rtbResults"></RichTextBox>
-		<TextBox x:Name="tbDebug"></TextBox>
-		<TextBlock x:Name="tbInfo"></TextBlock>
-		<TextBox x:Name="tbSearch"></TextBox>
-		<Menu Height="23" VerticalAlignment="Top">
+		<StackPanel>
+			<Button x:Name="btnSaveWidePatch"/>
+
+			<Grid x:Name="gWideScreenResults" />
+			<Image x:Name="imgPreview" />
+			<ListView x:Name="lvGames"></ListView>
+			<ListView x:Name="lvSaveStates"></ListView>
+			<ListView x:Name="lvScrape"></ListView>
+			<RichTextBox x:Name="rtbResults"></RichTextBox>
+			<TextBox x:Name="tbDebug"></TextBox>
+			<TextBlock x:Name="tbInfo"></TextBlock>
+			<TextBox x:Name="tbSearch" Text="Search"></TextBox>
+		</StackPanel>
+		<Menu VerticalAlignment="Top">
 			<MenuItem Header="File">
 				<MenuItem Header="_Add from image file" Click="miAddFromImage_Click" x:Name="miAddFromImage" />
 				<MenuItem Header="_Add from directory" />
@@ -31,5 +31,10 @@
 				<!--<MenuItem Header="_Donate" />-->
 			</MenuItem>
 		</Menu>
+		<WrapPanel HorizontalAlignment="Right" Width="84" Height="21" VerticalAlignment="Top">
+			<legacy:ImageButton x:Name="btnStacked" />
+			<legacy:ImageButton x:Name="btnTile" />
+			<legacy:ImageButton x:Name="btnTV" />
+		</WrapPanel>
 	</Grid>
 </Window>
