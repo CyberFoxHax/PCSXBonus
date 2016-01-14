@@ -4,31 +4,25 @@ using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace PCSX2Bonus.Views {
 	public sealed partial class wndErrorReport {
 		private bool _sendingReport;
-		private const string body = "";
-		internal Button btnOk;
-		internal Button btnSend;
-		private const string fromPassword = "h@te3027";
-		internal TextBlock lblInfo;
-		private const string subject = "Error Report";
 
 		public wndErrorReport() {
 			InitializeComponent();
-			base.Closing += wndErrorReport_Closing;
+			Closing += wndErrorReport_Closing;
 		}
 
 		private void btnOk_Click(object sender, RoutedEventArgs e) {
 			Environment.Exit(0);
 		}
 
-		private async void btnSend_Click(object sender, RoutedEventArgs e) {
+		private async void btnSend_Click(object sender, RoutedEventArgs e){
 			try {
 				_sendingReport = true;
 				IsHitTestVisible = false;
+				lblInfo.Visibility = Visibility.Visible;
 				lblInfo.Text = "Sending Report...";
 				var from = new MailAddress("miketanner3128@gmail.com", "PCSX2 Tester");
 				var to = new MailAddress("miketanner3128@gmail.com", "PCSX2 Developer");
@@ -51,7 +45,6 @@ namespace PCSX2Bonus.Views {
 				lblInfo.Text = "Report Sent!";
 				await Task.Delay(0x3e8);
 				Environment.Exit(0);
-				IsHitTestVisible = true;
 			}
 			catch {
 				Environment.Exit(0);
@@ -59,16 +52,20 @@ namespace PCSX2Bonus.Views {
 		}
 
 		private void wndErrorReport_Closing(object sender, CancelEventArgs e) {
-			if (_sendingReport) {
+			if (_sendingReport)
 				e.Cancel = true;
-			}
-			else {
+			else
 				Environment.Exit(0);
-			}
 		}
 
-		public string Message { get; set; }
+		public string Message{
+			get { return tbMessage.Text; }
+			set { tbMessage.Text = value; }
+		}
 
-		public string StackTrace { get; set; }
+		public string StackTrace{
+			get { return tbStackTrace.Text; }
+			set { tbStackTrace.Text = value; }
+		}
 	}
 }

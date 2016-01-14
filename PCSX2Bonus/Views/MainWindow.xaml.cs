@@ -22,27 +22,14 @@ namespace PCSX2Bonus.Views {
 	public sealed partial class MainWindow : IStyleConnector {
 		private readonly NotifyIcon _notifyIcon = new NotifyIcon();
 		private DispatcherTimer _t;
-		internal System.Windows.Controls.Button btnSaveWidePatch;
-		internal Legacy.ImageButton btnStacked;
-		internal Legacy.ImageButton btnTile;
-		internal Legacy.ImageButton btnTV;
-		internal Grid gWideScreenResults;
-		internal Image imgPreview;
-		internal System.Windows.Controls.ListView lvGames;
-		internal System.Windows.Controls.ListView lvSaveStates;
-		internal System.Windows.Controls.ListView lvScrape;
-		internal System.Windows.Controls.MenuItem miAddFromImage;
-		internal System.Windows.Controls.MenuItem miRemoveStates;
-		internal System.Windows.Controls.RichTextBox rtbResults;
-		internal System.Windows.Controls.TextBox tbDebug;
-		internal TextBlock tbInfo;
-		internal System.Windows.Controls.TextBox tbSearch;
 
 		public MainWindow() {
 			InitializeComponent();
-			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 			Loaded += MainWindow_Loaded;
 			CheckSettings();
+
+			return;
+			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 		}
 
 		private static void AddDummies() {
@@ -116,7 +103,11 @@ namespace PCSX2Bonus.Views {
 
 		private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) {
 			var exceptionObject = (Exception)e.ExceptionObject;
-			new wndErrorReport { Message = exceptionObject.Message, StackTrace = exceptionObject.StackTrace, Owner = this }.ShowDialog();
+			new wndErrorReport{
+				Message = exceptionObject.Message,
+				StackTrace = exceptionObject.StackTrace,
+				Owner = this
+			}.ShowDialog();
 		}
 
 		private void DeleteSaveStates() {
@@ -134,10 +125,10 @@ namespace PCSX2Bonus.Views {
 			if (!lvGames.IsVisible) return;
 			var query = tbSearch.Text;
 			var defaultView = CollectionViewSource.GetDefaultView(Legacy.Game.AllGames);
-			if (Extensions.IsEmpty(query) || (query == "Search"))
+			if (Extensions.IsEmpty(query) || query == "Search")
 				defaultView.Filter = null;
 			else {
-				defaultView.Filter = (Predicate<object>)Delegate.Combine(defaultView.Filter, (Predicate<object>)(o => Extensions.Contains(((Legacy.Game)o).Title, query, (StringComparison) StringComparison.InvariantCultureIgnoreCase)));
+				defaultView.Filter = (Predicate<object>)Delegate.Combine(defaultView.Filter, (Predicate<object>)(o => Extensions.Contains(((Legacy.Game)o).Title, query, StringComparison.InvariantCultureIgnoreCase)));
 				((ScrollViewer)Legacy.Tools.GetDescendantByType(lvGames, typeof(ScrollViewer))).ScrollToVerticalOffset(0.0);
 			}
 		}
@@ -241,7 +232,7 @@ namespace PCSX2Bonus.Views {
 				if (Settings.Default.enableGameToast) {
 					new wndGameNotify { Tag = g }.Show();
 				}
-				_notifyIcon.Text = string.Format("Currently playing [{0}]", Extensions.Truncate(g.Title, (int) 40));
+				_notifyIcon.Text = string.Format("Currently playing [{0}]", Extensions.Truncate(g.Title, 40));
 				_notifyIcon.Visible = true;
 				p.Start();
 			}
@@ -355,37 +346,39 @@ namespace PCSX2Bonus.Views {
 			SetupNotifyIcon();
 			lvGames.SelectionChanged += lvGames_SelectionChanged;
 			var contextMenu = lvGames.ContextMenu;
-			NameScope.SetNameScope(contextMenu, NameScope.GetNameScope(this));
-			var miRemove = (System.Windows.Controls.MenuItem)contextMenu.Items[1];
-			var miRescrape = (System.Windows.Controls.MenuItem)contextMenu.Items[3];
-			var miSaveStates = (System.Windows.Controls.MenuItem)contextMenu.Items[4];
-			var miWideScreen = (System.Windows.Controls.MenuItem)contextMenu.Items[13];
-			var miPlay = (System.Windows.Controls.MenuItem)contextMenu.Items[0];
-			miRescrape.Click += miRescrape_Click;
-			lvGames.ContextMenuOpening += lvGames_ContextMenuOpening;
-			miRemoveStates.Click += (o, e) => DeleteSaveStates();
-			lvGames.AllowDrop = true;
-			lvGames.Drop += async delegate(object o, System.Windows.DragEventArgs e) {
-				var data = (string[])e.Data.GetData(System.Windows.DataFormats.FileDrop);
-				var files = (
-					from s in data
-					let extension = Path.GetExtension(s)
-					where Legacy.GameData.AcceptableFormats.Any(frm => extension != null && extension.Equals(frm, StringComparison.InvariantCultureIgnoreCase))
-					select s
-				).ToArray();
-				await Legacy.GameManager.AddGamesFromImages(files);
-			};
-			miPlay.Click += delegate {
-				var count = lvGames.SelectedItems.Count;
-				if ((count != 0) && (count <= 1))
-					LaunchGame((Legacy.Game)lvGames.SelectedItem);
-			};
-			miRemove.Click += delegate {
-				var games = lvGames.SelectedItems.Cast<Legacy.Game>().ToList<Legacy.Game>();
-				RemoveSelectedGames(games);
-			};
-			miSaveStates.Click += (o, e) => ShowSaveStates();
-			miWideScreen.Click += (o, e) => ShowWideScreenResults();
+			if (contextMenu != null){
+				NameScope.SetNameScope(contextMenu, NameScope.GetNameScope(this));
+				var miRemove = (System.Windows.Controls.MenuItem)contextMenu.Items[1];
+				var miRescrape = (System.Windows.Controls.MenuItem)contextMenu.Items[3];
+				var miSaveStates = (System.Windows.Controls.MenuItem)contextMenu.Items[4];
+				var miWideScreen = (System.Windows.Controls.MenuItem)contextMenu.Items[13];
+				var miPlay = (System.Windows.Controls.MenuItem)contextMenu.Items[0];
+				miRescrape.Click += miRescrape_Click;
+				lvGames.ContextMenuOpening += lvGames_ContextMenuOpening;
+				miRemoveStates.Click += (o, e) => DeleteSaveStates();
+				lvGames.AllowDrop = true;
+				lvGames.Drop += async delegate(object o, System.Windows.DragEventArgs e) {
+					var data = (string[])e.Data.GetData(System.Windows.DataFormats.FileDrop);
+					var files = (
+						from s in data
+						let extension = Path.GetExtension(s)
+						where Legacy.GameData.AcceptableFormats.Any(frm => extension != null && extension.Equals(frm, StringComparison.InvariantCultureIgnoreCase))
+						select s
+						).ToArray();
+					await Legacy.GameManager.AddGamesFromImages(files);
+				};
+				miPlay.Click += delegate {
+					var count = lvGames.SelectedItems.Count;
+					if ((count != 0) && (count <= 1))
+						LaunchGame((Legacy.Game)lvGames.SelectedItem);
+				};
+				miRemove.Click += delegate {
+					var games = lvGames.SelectedItems.Cast<Legacy.Game>().ToList<Legacy.Game>();
+					RemoveSelectedGames(games);
+				};
+				miSaveStates.Click += (o, e) => ShowSaveStates();
+				miWideScreen.Click += (o, e) => ShowWideScreenResults();
+			}
 			_t = new DispatcherTimer(TimeSpan.FromMilliseconds(200.0), DispatcherPriority.DataBind, Filter, Dispatcher);
 			btnSaveWidePatch.Click += async delegate {
 				var g = (Legacy.Game)lvGames.Tag;
@@ -448,7 +441,6 @@ namespace PCSX2Bonus.Views {
 			await Legacy.GameManager.BuildDatabase();
 			Legacy.GameManager.GenerateDirectories();
 			Legacy.GameManager.LoadXml();
-			Console.WriteLine("loaded xml");
 			await Legacy.GameManager.GenerateUserLibrary();
 			Legacy.GameManager.UpdateGamesToLatestCompatibility();
 			var defaultView = Settings.Default.defaultView;
