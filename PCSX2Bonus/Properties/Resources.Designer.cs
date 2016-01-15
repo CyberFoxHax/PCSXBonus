@@ -79,25 +79,6 @@ namespace PCSX2Bonus.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;ResourceDictionary xmlns=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;
-        ///                    xmlns:x=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot;
-        ///                    xmlns:legacy=&quot;clr-namespace:PCSX2Bonus.Legacy&quot;&gt;
-        ///	&lt;GridView x:Key=&quot;gridView&quot;&gt;
-        ///		&lt;GridViewColumn Width=&quot;170&quot; Header=&quot;Serial&quot;&gt;
-        ///			&lt;GridViewColumn.CellTemplate&gt;
-        ///				&lt;DataTemplate&gt;
-        ///					&lt;Grid&gt;
-        ///						&lt;Image Source=&quot;{Binding (legacy:Game.ImagePath)}&quot; /&gt;
-        ///						&lt;TextBlock Text=&quot;{Binding (legacy:Game.ImagePath)}&quot; /&gt;
-        ///					&lt;/Grid&gt;        /// [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string gridView {
-            get {
-                return ResourceManager.GetString("gridView", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon icon {

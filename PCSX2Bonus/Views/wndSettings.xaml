@@ -1,9 +1,27 @@
 ﻿<Window x:Class="PCSX2Bonus.Views.wndSettings"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="wndSettings" Height="300" Width="300">
-    <Grid>
-		<Label Content="wndSettings" />
-
-	</Grid>
+        Title="wndSettings" Height="318" Width="363">
+	<StackPanel>
+		<Button x:Name="btnBrowseData" />
+		<Button x:Name="btnBrowseDir" />
+		<Button x:Name="btnBrowseExe" />
+		<Button x:Name="btnCancel" />
+		<Button x:Name="btnCancelSet" />
+		<Button x:Name="btnConfirmSet" />
+		<Button x:Name="btnEditTheme" />
+		<Button x:Name="btnOk" />
+		<CheckBox x:Name="cbEnableGamepad"	/>
+		<CheckBox x:Name="cbSaveInfo" />
+		<ComboBox x:Name="cbSortType" />
+		<ComboBox x:Name="cbTheme" />
+		<CheckBox x:Name="cbUseGameToast" />
+		<CheckBox x:Name="cbUseUpdated" />
+		<ComboBox x:Name="cbViewType" />
+		<TextBox x:Name="tbButtonCancel" />
+		<TextBox x:Name="tbButtonComfirm" />
+		<TextBox x:Name="tbPcsx2DataDir" />
+		<TextBox x:Name="tbPcsx2Dir" />
+		<TextBox x:Name="tbPcsx2Exe" />
+	</StackPanel>
 </Window>

@@ -38,14 +38,14 @@
 		<Menu VerticalAlignment="Top">
 			<MenuItem Header="File">
 				<MenuItem Header="_Add from image file" Click="miAddFromImage_Click" x:Name="miAddFromImage" />
-				<MenuItem Header="_Add from directory" />
+				<MenuItem Header="_Add from directory" Command="{Binding Source={x:Static legacy:Commands.AddFromDirCommand}}" />
 				<MenuItem Header="_miRemoveStates" x:Name="miRemoveStates" />
 			</MenuItem>
 			<MenuItem Header="Edit">
-				<MenuItem Header="_Settings" />
+				<MenuItem Header="_Settings" Command="{Binding Source={x:Static legacy:Commands.SettingsCommand}}" />
 			</MenuItem>
 			<MenuItem Header="Help">
-				<MenuItem Header="_About" />
+				<MenuItem Header="_About" Command="{Binding Source={x:Static legacy:Commands.AboutCommand}}"/>
 				<!--<MenuItem Header="_Donate" />-->
 			</MenuItem>
 		</Menu>
