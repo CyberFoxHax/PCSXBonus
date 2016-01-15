@@ -1,22 +1,22 @@
 ﻿<Window x:Class="PCSX2Bonus.Views.wndSettings"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="wndSettings" Height="318" Width="363">
+        Title="wndSettings" Height="434" Width="363" Closing="Window_Closing">
 	<StackPanel>
-		<Button x:Name="btnBrowseData" />
-		<Button x:Name="btnBrowseDir" />
-		<Button x:Name="btnBrowseExe" />
-		<Button x:Name="btnCancel" />
-		<Button x:Name="btnCancelSet" />
-		<Button x:Name="btnConfirmSet" />
-		<Button x:Name="btnEditTheme" />
-		<Button x:Name="btnOk" />
-		<CheckBox x:Name="cbEnableGamepad"	/>
-		<CheckBox x:Name="cbSaveInfo" />
+		<Button x:Name="btnBrowseData" Content="..." Click="btnBrowseData_Click" />
+		<Button x:Name="btnBrowseDir" Content="..." Click="btnBrowseDir_Click" />
+		<Button x:Name="btnBrowseExe" Content="..." Click="btnBrowseExe_Click" />
+		<Button x:Name="btnCancel" Content="Cancel" Click="btnCancel_Click" />
+		<Button x:Name="btnCancelSet" Content="CancelSet" Click="btnCancelSet_Click" />
+		<Button x:Name="btnConfirmSet" Content="ConfirmSet" Click="btnConfirmSet_Click" />
+		<Button x:Name="btnEditTheme" Content="Edit theme" Click="btnEditTheme_Click" />
+		<Button x:Name="btnOk" Content="Ok" Click="btnOk_Click" />
+		<CheckBox x:Name="cbEnableGamepad" Content="EnableGamepad" Click="cbEnableGamepad_Checked" />
+		<CheckBox x:Name="cbSaveInfo" Content="Save info" />
 		<ComboBox x:Name="cbSortType" />
 		<ComboBox x:Name="cbTheme" />
-		<CheckBox x:Name="cbUseGameToast" />
-		<CheckBox x:Name="cbUseUpdated" />
+		<CheckBox x:Name="cbUseGameToast" Content="Use game toast" />
+		<CheckBox x:Name="cbUseUpdated" Content="Use updated" />
 		<ComboBox x:Name="cbViewType" />
 		<TextBox x:Name="tbButtonCancel" />
 		<TextBox x:Name="tbButtonComfirm" />

@@ -94,16 +94,18 @@ namespace PCSX2Bonus.Views {
 		}
 
 		private void btnOk_Click(object sender, RoutedEventArgs e) {
-			Settings.Default.defaultSort = (((ComboBoxItem)cbSortType.SelectedItem).Content.ToString() != "Unsorted") ? ((ComboBoxItem)cbSortType.SelectedItem).Content.ToString() : "Default";
+			Settings.Default.defaultSort = ((ComboBoxItem)cbSortType.SelectedItem).Content.ToString() != "Unsorted" ? ((ComboBoxItem)cbSortType.SelectedItem).Content.ToString() : "Default";
 			Settings.Default.defaultView = ((ComboBoxItem)cbViewType.SelectedItem).Content.ToString();
-			Settings.Default.saveInfo = cbSaveInfo.IsChecked.Value;
-			Settings.Default.useUpdatedCompat = cbUseUpdated.IsChecked.Value;
 			Settings.Default.pcsx2Dir = tbPcsx2Dir.Text;
 			Settings.Default.pcsx2DataDir = tbPcsx2DataDir.Text;
 			Settings.Default.pcsx2Exe = tbPcsx2Exe.Text;
-			Settings.Default.enableGamepad = cbEnableGamepad.IsChecked.Value;
 			Settings.Default.defaultTheme = cbTheme.SelectedItem.ToString();
-			Settings.Default.enableGameToast = cbUseGameToast.IsChecked.Value;
+
+			if (cbUseGameToast	.IsChecked != null) Settings.Default.enableGameToast	= cbUseGameToast .IsChecked.Value;
+			if (cbSaveInfo		.IsChecked != null) Settings.Default.saveInfo			= cbSaveInfo	 .IsChecked.Value;
+			if (cbUseUpdated	.IsChecked != null) Settings.Default.useUpdatedCompat	= cbUseUpdated	 .IsChecked.Value;
+			if (cbEnableGamepad	.IsChecked != null) Settings.Default.enableGamepad		= cbEnableGamepad.IsChecked.Value;
+
 			Close();
 		}
 
@@ -115,8 +117,8 @@ namespace PCSX2Bonus.Views {
 				Legacy.Tools.ShowMessage("Error enabling gamepad", Legacy.MessageType.Error);
 			}
 			else {
-				Legacy.Tools.ShowMessage("Error enabling gamepad [Error code: 10045]", Legacy.MessageType.Error);
 				cbEnableGamepad.IsChecked = false;
+				Legacy.Tools.ShowMessage("Error enabling gamepad [Error code: 10045]", Legacy.MessageType.Error);
 			}
 		}
 
@@ -129,9 +131,9 @@ namespace PCSX2Bonus.Views {
 		private void Setup() {
 			FetchThemes();
 			var defaultView = Settings.Default.defaultView;
-			if (defaultView != null) {
-				if (defaultView != "Stacked"){
-					switch (defaultView){
+			if (defaultView != null)
+				if (defaultView != "Stacked")
+					switch (defaultView) {
 						case "Tile":
 							cbViewType.SelectedIndex = 1;
 							break;
@@ -139,10 +141,8 @@ namespace PCSX2Bonus.Views {
 							cbViewType.SelectedIndex = 2;
 							break;
 					}
-				}
 				else
 					cbViewType.SelectedIndex = 0;
-			}
 			var defaultSort = Settings.Default.defaultSort;
 			if (defaultSort == null) return;
 			if (defaultSort != "Alphabetical") {
