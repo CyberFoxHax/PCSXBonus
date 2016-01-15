@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -11,7 +10,7 @@ namespace PCSX2Bonus.Legacy {
 		private Device _joystick;
 		private CancellationTokenSource cts = new CancellationTokenSource();
 		public bool IsValid;
-		private Task pollingTask;
+		private Task _pollingTask;
 
 		public event EventHandler ButtonPressed;
 
@@ -52,7 +51,7 @@ namespace PCSX2Bonus.Legacy {
 						while (enumerator.MoveNext()) {
 							var current = (BufferedData)enumerator.Current;
 							if (current.ButtonPressedData == 1) {
-								var button = Array.FindIndex<byte>(Buttons, b => b != 0);
+								var button = Array.FindIndex(Buttons, b => b != 0);
 								if (button == -1) {
 									continue;
 								}
@@ -147,8 +146,8 @@ namespace PCSX2Bonus.Legacy {
 
 		public void PollAsync() {
 			cts = new CancellationTokenSource();
-			pollingTask = new Task(BeginPoll, cts.Token);
-			pollingTask.Start();
+			_pollingTask = new Task(BeginPoll, cts.Token);
+			_pollingTask.Start();
 		}
 
 		public byte[] Buttons {
