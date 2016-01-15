@@ -30,107 +30,91 @@ namespace PCSX2Bonus.Views {
 
 		public wndFullScreen() {
 			InitializeComponent();
-			base.Loaded += wndFullScreen_Loaded;
+			Loaded += wndFullScreen_Loaded;
 		}
 
 		private void _timer_Tick(object sender, EventArgs e) {
 			var position = Mouse.GetPosition(lbGames);
-			if (position.Y > (_sv.ViewportHeight - 20.0)) {
+			if (position.Y > (_sv.ViewportHeight - 20.0))
 				_sv.LineDown();
-			}
-			else if (position.Y < 20.0) {
+			else if (position.Y < 20.0)
 				_sv.LineUp();
-			}
 		}
 
 		private void AquireGamepad() {
 			gamePad = new Legacy.Gamepad(this);
-			if (gamePad.IsValid) {
-				gamePad.ButtonPressed += gamePad_ButtonPressed;
-				gamePad.DirectionChanged += gamePad_DirectionChanged;
-				gamePad.PollAsync();
-			}
+			if (gamePad.IsValid == false) return;
+			gamePad.ButtonPressed += gamePad_ButtonPressed;
+			gamePad.DirectionChanged += gamePad_DirectionChanged;
+			gamePad.PollAsync();
 		}
 
 		private void btnInfo_MouseDown(object sender, MouseButtonEventArgs e) {
-			if (e.LeftButton == MouseButtonState.Pressed) {
+			if (e.LeftButton == MouseButtonState.Pressed)
 				ShowInfo();
-			}
 		}
 
 		private void btnPlay_MouseDown(object sender, MouseButtonEventArgs e) {
-			if (e.LeftButton == MouseButtonState.Pressed) {
+			if (e.LeftButton == MouseButtonState.Pressed)
 				LaunchGame();
-			}
 		}
 
-		private void DisposeImage(BitmapImage img) {
-			if (img != null) {
-				try {
-					var buffer = new byte[1];
-					using (var stream = new MemoryStream(buffer)) {
-						img.UriSource = null;
-						img.StreamSource = stream;
-					}
+		private void DisposeImage(BitmapImage img){
+			if (img == null) return;
+			try {
+				var buffer = new byte[1];
+				using (var stream = new MemoryStream(buffer)) {
+					img.UriSource = null;
+					img.StreamSource = stream;
 				}
-				catch (Exception exception) {
-					Console.WriteLine(exception.Message);
-				}
+			}
+			catch (Exception exception) {
+				Console.WriteLine(exception.Message);
 			}
 		}
 
 		private void gamePad_ButtonPressed(object sender, EventArgs e) {
-			Action callback = null;
-			Action action2 = null;
-			if (ActiveGame != null) {
-				var num = (int)sender;
-				if (num == Settings.Default.buttonOk) {
-					if (callback == null) {
-						callback = delegate {
-							var element = (ListBoxItem)lbGames.ItemContainerGenerator.ContainerFromItem(ActiveGame);
-							var descendantByName = (Image)Legacy.Tools.GetDescendantByName(element, "btnPlay");
-							var image2 = (Image)Legacy.Tools.GetDescendantByName(element, "btnInfo");
-							if (!gameSelected) {
-								gameSelected = true;
-								element.Tag = "info";
-								descendantByName.Tag = "null";
-								image2.Tag = "null";
-							}
-							else if (descendantByName.Tag.ToString() == "selected") {
-								LaunchGame();
-							}
-							else if (image2.Tag.ToString() == "selected") {
-								ShowInfo();
-							}
-						};
+			if (ActiveGame == null) return;
+			var num = (int)sender;
+			if (num == Settings.Default.buttonOk){
+				Dispatcher.Invoke(delegate {
+					var element = (ListBoxItem)lbGames.ItemContainerGenerator.ContainerFromItem(ActiveGame);
+					var descendantByName = (Image)Legacy.Tools.GetDescendantByName(element, "btnPlay");
+					var image2 = (Image)Legacy.Tools.GetDescendantByName(element, "btnInfo");
+					if (!gameSelected) {
+						gameSelected = true;
+						element.Tag = "info";
+						descendantByName.Tag = "null";
+						image2.Tag = "null";
 					}
-					base.Dispatcher.Invoke(callback);
-				}
-				else if (num == Settings.Default.buttonCancel) {
-					if (action2 == null) {
-						action2 = delegate {
-							var element = (ListBoxItem)lbGames.ItemContainerGenerator.ContainerFromItem(ActiveGame);
-							var descendantByName = (Image)Legacy.Tools.GetDescendantByName(element, "btnPlay");
-							var image2 = (Image)Legacy.Tools.GetDescendantByName(element, "btnInfo");
-							if (gameSelected && !infoVisible) {
-								descendantByName.RaiseEvent(MouseLeaveArgs());
-								image2.RaiseEvent(MouseLeaveArgs());
-								gameSelected = false;
-								element.Tag = "null";
-							}
-							else if (gameSelected && infoVisible) {
-								HideInfo();
-							}
-						};
+					else if (descendantByName.Tag.ToString() == "selected") {
+						LaunchGame();
 					}
-					base.Dispatcher.Invoke(action2);
-				}
+					else if (image2.Tag.ToString() == "selected") {
+						ShowInfo();
+					}
+				});
+			}
+			else if (num == Settings.Default.buttonCancel){
+				Dispatcher.Invoke(delegate {
+					var element = (ListBoxItem)lbGames.ItemContainerGenerator.ContainerFromItem(ActiveGame);
+					var descendantByName = (Image)Legacy.Tools.GetDescendantByName(element, "btnPlay");
+					var image2 = (Image)Legacy.Tools.GetDescendantByName(element, "btnInfo");
+					if (gameSelected && !infoVisible) {
+						descendantByName.RaiseEvent(MouseLeaveArgs());
+						image2.RaiseEvent(MouseLeaveArgs());
+						gameSelected = false;
+						element.Tag = "null";
+					}
+					else if (gameSelected)
+						HideInfo();
+				});
 			}
 		}
 
 		private void gamePad_DirectionChanged(object sender, EventArgs e) {
 			var dir = sender.ToString();
-			base.Dispatcher.Invoke(delegate {
+			Dispatcher.Invoke(delegate {
 				if (gameSelected) {
 					var element = (ListBoxItem)lbGames.ItemContainerGenerator.ContainerFromItem(ActiveGame);
 					var descendantByName = (Image)Legacy.Tools.GetDescendantByName(element, "btnPlay");
@@ -147,13 +131,14 @@ namespace PCSX2Bonus.Views {
 						image2.RaiseEvent(MouseEnterArgs());
 						descendantByName.RaiseEvent(MouseLeaveArgs());
 					}
-					if (infoVisible) {
-						if (dir == "up") {
+					if (!infoVisible) return;
+					switch (dir){
+						case "up":
 							svDescription.LineUp();
-						}
-						else if (dir == "down") {
+							break;
+						case "down":
 							svDescription.LineDown();
-						}
+							break;
 					}
 				}
 				else {
@@ -185,30 +170,30 @@ namespace PCSX2Bonus.Views {
 		}
 
 		private void infoPanel_MouseDown(object sender, MouseButtonEventArgs e) {
-			if (e.RightButton == MouseButtonState.Pressed) {
+			if (e.RightButton == MouseButtonState.Pressed)
 				HideInfo();
-			}
 		}
 
-		private void itemHost_PreviewMouseMove(object sender, MouseEventArgs e) {
+		private static void itemHost_PreviewMouseMove(object sender, MouseEventArgs e) {
 		}
 
 		private void LaunchGame() {
-			if (ActiveGame != null) {
-				var mainWindow = (Views.MainWindow)Application.Current.MainWindow;
-				base.Hide();
-				mainWindow.LaunchGame(ActiveGame, true);
-			}
+			if (ActiveGame == null) return;
+			var mainWindow = (MainWindow)Application.Current.MainWindow;
+			Hide();
+			mainWindow.LaunchGame(ActiveGame, true);
 		}
 
 		public void lbItemKeyDown(object sender, KeyEventArgs e) {
 			var element = (ListBoxItem)lbGames.ItemContainerGenerator.ContainerFromItem(ActiveGame);
 			if (gameSelected) {
-				if (e.Key == Key.Left) {
-					var descendantByName = (Button)Legacy.Tools.GetDescendantByName(element, "btnPlay");
-				}
-				else if (e.Key == Key.Right) {
-					var button2 = (Button)Legacy.Tools.GetDescendantByName(element, "btnInfo");
+				switch (e.Key){
+					case Key.Left:
+						var descendantByName = (Button) Legacy.Tools.GetDescendantByName(element, "btnPlay");
+						break;
+					case Key.Right:
+						var button2 = (Button) Legacy.Tools.GetDescendantByName(element, "btnInfo");
+						break;
 				}
 			}
 			else if (e.Key == Key.Return) {
@@ -242,60 +227,59 @@ namespace PCSX2Bonus.Views {
 		private void NavigateItems(FocusNavigationDirection dir) {
 			var span = new TimeSpan(DateTime.Now.Ticks);
 			var milliseconds = span.Milliseconds;
-			if (dir == FocusNavigationDirection.Right) {
-				if ((selectedIndex + 1) < Legacy.Game.AllGames.Count) {
-					selectedIndex++;
-				}
-				if ((selectedIndex + 1) > 0) {
-					var item = (ListBoxItem)lbGames.ItemContainerGenerator.ContainerFromIndex(selectedIndex - 1);
-					var args = new MouseEventArgs(Mouse.PrimaryDevice, milliseconds) {
-						RoutedEvent = Mouse.MouseLeaveEvent
+			switch (dir){
+				case FocusNavigationDirection.Right:
+					if ((selectedIndex + 1) < Legacy.Game.AllGames.Count)
+						selectedIndex++;
+					if ((selectedIndex + 1) > 0){
+						var item = (ListBoxItem) lbGames.ItemContainerGenerator.ContainerFromIndex(selectedIndex - 1);
+						var args = new MouseEventArgs(Mouse.PrimaryDevice, milliseconds){
+							RoutedEvent = Mouse.MouseLeaveEvent
+						};
+						Panel.SetZIndex(item, 0);
+						item.RaiseEvent(args);
+						item.IsSelected = false;
+					}
+					var element = (ListBoxItem) lbGames.ItemContainerGenerator.ContainerFromIndex(selectedIndex);
+					Panel.SetZIndex(element, 10);
+					var e = new MouseEventArgs(Mouse.PrimaryDevice, milliseconds){
+						RoutedEvent = Mouse.MouseEnterEvent
 					};
-					Panel.SetZIndex(item, 0);
-					item.RaiseEvent(args);
-					item.IsSelected = false;
-				}
-				var element = (ListBoxItem)lbGames.ItemContainerGenerator.ContainerFromIndex(selectedIndex);
-				Panel.SetZIndex(element, 10);
-				var e = new MouseEventArgs(Mouse.PrimaryDevice, milliseconds) {
-					RoutedEvent = Mouse.MouseEnterEvent
-				};
-				element.RaiseEvent(e);
-				element.Focus();
-				lbGames.SelectedItem = lbGames.Items[selectedIndex];
-				lbGames.ScrollIntoView(lbGames.Items[selectedIndex]);
-				ActiveGame = (Legacy.Game)lbGames.SelectedItem;
-			}
-			else if (dir == FocusNavigationDirection.Left) {
-				if (selectedIndex > 0) {
-					selectedIndex--;
-				}
-				if ((selectedIndex + 1) < lbGames.Items.Count) {
-					var item3 = (ListBoxItem)lbGames.ItemContainerGenerator.ContainerFromIndex(selectedIndex + 1);
-					var args5 = new MouseEventArgs(Mouse.PrimaryDevice, milliseconds) {
-						RoutedEvent = Mouse.MouseLeaveEvent
+					element.RaiseEvent(e);
+					element.Focus();
+					lbGames.SelectedItem = lbGames.Items[selectedIndex];
+					lbGames.ScrollIntoView(lbGames.Items[selectedIndex]);
+					ActiveGame = (Legacy.Game) lbGames.SelectedItem;
+					break;
+				case FocusNavigationDirection.Left:
+					if (selectedIndex > 0)
+						selectedIndex--;
+					if ((selectedIndex + 1) < lbGames.Items.Count){
+						var item3 = (ListBoxItem) lbGames.ItemContainerGenerator.ContainerFromIndex(selectedIndex + 1);
+						var args5 = new MouseEventArgs(Mouse.PrimaryDevice, milliseconds){
+							RoutedEvent = Mouse.MouseLeaveEvent
+						};
+						Panel.SetZIndex(item3, 0);
+						item3.RaiseEvent(args5);
+						item3.IsSelected = false;
+					}
+					var item4 = (ListBoxItem) lbGames.ItemContainerGenerator.ContainerFromIndex(selectedIndex);
+					Panel.SetZIndex(item4, 10);
+					var args7 = new MouseEventArgs(Mouse.PrimaryDevice, milliseconds){
+						RoutedEvent = Mouse.MouseEnterEvent
 					};
-					Panel.SetZIndex(item3, 0);
-					item3.RaiseEvent(args5);
-					item3.IsSelected = false;
-				}
-				var item4 = (ListBoxItem)lbGames.ItemContainerGenerator.ContainerFromIndex(selectedIndex);
-				Panel.SetZIndex(item4, 10);
-				var args7 = new MouseEventArgs(Mouse.PrimaryDevice, milliseconds) {
-					RoutedEvent = Mouse.MouseEnterEvent
-				};
-				item4.RaiseEvent(args7);
-				item4.Focus();
-				lbGames.SelectedItem = lbGames.Items[selectedIndex];
-				lbGames.ScrollIntoView(lbGames.Items[selectedIndex]);
-				ActiveGame = (Legacy.Game)lbGames.SelectedItem;
-			}
-			else if (dir == FocusNavigationDirection.Down) {
-				var item5 = (ListBoxItem)lbGames.ItemContainerGenerator.ContainerFromIndex(selectedIndex);
-				var num2 = ((int)Math.Floor((double)(lbGames.ActualWidth / item5.ActualWidth))) + selectedIndex;
-				if ((num2 + 1) <= lbGames.Items.Count) {
-					if ((selectedIndex + 1) > 0) {
-						var args9 = new MouseEventArgs(Mouse.PrimaryDevice, milliseconds) {
+					item4.RaiseEvent(args7);
+					item4.Focus();
+					lbGames.SelectedItem = lbGames.Items[selectedIndex];
+					lbGames.ScrollIntoView(lbGames.Items[selectedIndex]);
+					ActiveGame = (Legacy.Game) lbGames.SelectedItem;
+					break;
+				case FocusNavigationDirection.Down:
+					var item5 = (ListBoxItem) lbGames.ItemContainerGenerator.ContainerFromIndex(selectedIndex);
+					var num2 = ((int) Math.Floor(lbGames.ActualWidth/item5.ActualWidth)) + selectedIndex;
+					if ((num2 + 1) > lbGames.Items.Count) return;
+					if ((selectedIndex + 1) > 0){
+						var args9 = new MouseEventArgs(Mouse.PrimaryDevice, milliseconds){
 							RoutedEvent = Mouse.MouseLeaveEvent
 						};
 						Panel.SetZIndex(item5, 0);
@@ -303,24 +287,23 @@ namespace PCSX2Bonus.Views {
 						item5.IsSelected = false;
 					}
 					selectedIndex = num2;
-					item5 = (ListBoxItem)lbGames.ItemContainerGenerator.ContainerFromIndex(selectedIndex);
+					item5 = (ListBoxItem) lbGames.ItemContainerGenerator.ContainerFromIndex(selectedIndex);
 					Panel.SetZIndex(item5, 10);
-					var args11 = new MouseEventArgs(Mouse.PrimaryDevice, milliseconds) {
+					var args11 = new MouseEventArgs(Mouse.PrimaryDevice, milliseconds){
 						RoutedEvent = Mouse.MouseEnterEvent
 					};
 					item5.RaiseEvent(args11);
 					item5.Focus();
 					lbGames.SelectedItem = lbGames.Items[selectedIndex];
 					lbGames.ScrollIntoView(lbGames.Items[selectedIndex]);
-					ActiveGame = (Legacy.Game)lbGames.SelectedItem;
-				}
-			}
-			else if (dir == FocusNavigationDirection.Up) {
-				var item6 = (ListBoxItem)lbGames.ItemContainerGenerator.ContainerFromIndex(selectedIndex);
-				var num3 = selectedIndex - ((int)Math.Floor((double)(lbGames.ActualWidth / item6.ActualWidth)));
-				if (num3 >= 0) {
-					if (selectedIndex > 0) {
-						var args13 = new MouseEventArgs(Mouse.PrimaryDevice, milliseconds) {
+					ActiveGame = (Legacy.Game) lbGames.SelectedItem;
+					break;
+				case FocusNavigationDirection.Up:
+					var item6 = (ListBoxItem) lbGames.ItemContainerGenerator.ContainerFromIndex(selectedIndex);
+					var num3 = selectedIndex - ((int) Math.Floor(lbGames.ActualWidth/item6.ActualWidth));
+					if (num3 < 0) return;
+					if (selectedIndex > 0){
+						var args13 = new MouseEventArgs(Mouse.PrimaryDevice, milliseconds){
 							RoutedEvent = Mouse.MouseLeaveEvent
 						};
 						Panel.SetZIndex(item6, 0);
@@ -328,33 +311,31 @@ namespace PCSX2Bonus.Views {
 						item6.IsSelected = false;
 					}
 					selectedIndex = num3;
-					item6 = (ListBoxItem)lbGames.ItemContainerGenerator.ContainerFromIndex(selectedIndex);
+					item6 = (ListBoxItem) lbGames.ItemContainerGenerator.ContainerFromIndex(selectedIndex);
 					Panel.SetZIndex(item6, 10);
-					var args15 = new MouseEventArgs(Mouse.PrimaryDevice, milliseconds) {
+					var args15 = new MouseEventArgs(Mouse.PrimaryDevice, milliseconds){
 						RoutedEvent = Mouse.MouseEnterEvent
 					};
 					item6.RaiseEvent(args15);
 					item6.Focus();
 					lbGames.SelectedItem = lbGames.Items[selectedIndex];
 					lbGames.ScrollIntoView(lbGames.Items[selectedIndex]);
-					ActiveGame = (Legacy.Game)lbGames.SelectedItem;
-				}
+					ActiveGame = (Legacy.Game) lbGames.SelectedItem;
+					break;
 			}
 		}
 
 		private void OnPropertyChanged(string property) {
-			if (PropertyChanged != null) {
+			if (PropertyChanged != null)
 				PropertyChanged(this, new PropertyChangedEventArgs(property));
-			}
 		}
 
 		private void ShowInfo() {
-			if (ActiveGame != null) {
-				svDescription.ScrollToVerticalOffset(0.0);
-				infoVisible = true;
-				infoPanel.Visibility = Visibility.Visible;
-				lbGames.IsHitTestVisible = false;
-			}
+			if (ActiveGame == null) return;
+			svDescription.ScrollToVerticalOffset(0.0);
+			infoVisible = true;
+			infoPanel.Visibility = Visibility.Visible;
+			lbGames.IsHitTestVisible = false;
 		}
 
 		[EditorBrowsable(EditorBrowsableState.Never), DebuggerNonUserCode, GeneratedCode("PresentationBuildTasks", "4.0.0.0")]
@@ -384,7 +365,7 @@ namespace PCSX2Bonus.Views {
 		}
 
 		private void wndFullScreen_Closing(object sender, CancelEventArgs e) {
-			base.DialogResult = true;
+			DialogResult = true;
 			if (gamePad != null) {
 				gamePad.CancelPollAsync();
 				gamePad.Dispose();
@@ -396,24 +377,22 @@ namespace PCSX2Bonus.Views {
 
 		private void wndFullScreen_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e) {
 			if (gamePad == null) return;
-			if (IsVisible) {
+			if (IsVisible){
 				if (gamePad == null) return;
 				gamePad.CancelPollAsync();
 				gamePad.PollAsync();
 			}
-			else {
+			else
 				gamePad.CancelPollAsync();
-			}
 		}
 
 		private void wndFullScreen_Loaded(object sender, RoutedEventArgs e) {
-			if (Settings.Default.enableGamepad) {
+			if (Settings.Default.enableGamepad)
 				AquireGamepad();
-			}
 			var defaultSort = Settings.Default.defaultSort;
 			if (defaultSort != null) {
-				if (defaultSort != "Alphabetical") {
-					switch (defaultSort) {
+				if (defaultSort != "Alphabetical"){
+					switch (defaultSort){
 						case "Serial":
 							lbGames.Items.SortDescriptions.Add(new SortDescription("Serial", ListSortDirection.Ascending));
 							break;
@@ -421,9 +400,8 @@ namespace PCSX2Bonus.Views {
 							break;
 					}
 				}
-				else {
+				else
 					lbGames.Items.SortDescriptions.Add(new SortDescription("Title", ListSortDirection.Ascending));
-				}
 			}
 			_sv = (ScrollViewer)Legacy.Tools.GetDescendantByType(lbGames, typeof(ScrollViewer));
 			_timer.Interval = TimeSpan.FromMilliseconds(0.5);
