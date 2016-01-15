@@ -13,7 +13,11 @@ namespace PCSX2Bonus.Views {
 
 		public wndSetup() {
 			InitializeComponent();
-			Loaded += wndSetup_Loaded;
+			Closing += wndSetup_Closing;
+
+#if DEBUG
+			tbPcsx2DataDir.Text = tbPcsx2Dir.Text = @"E:\Software\Games\Emulator\ps2\PCSX2 - Copy";
+#endif
 		}
 
 		private void btnBrowse_Click(object sender, RoutedEventArgs e) {
@@ -69,10 +73,6 @@ namespace PCSX2Bonus.Views {
 			}
 			else
 				e.Cancel = true;
-		}
-
-		private void wndSetup_Loaded(object sender, RoutedEventArgs e) {
-			Closing += wndSetup_Closing;
 		}
 	}
 }
