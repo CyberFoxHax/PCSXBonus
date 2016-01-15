@@ -5,11 +5,11 @@
         Title="MainWindow" Height="450.093" Width="710.036" Closing="Window_Closing">
 	<Window.Resources>
 		<ContextMenu x:Key="lvGamesListCtxMenu">
-			<MenuItem Header="Play" ToolTip="Launch the selected game" />
-			<MenuItem Header="Remove Selected Item(s)" />
+			<MenuItem Header="Play" ToolTip="Launch the selected game" x:Name="miPlay" />
+			<MenuItem Header="Remove Selected Item(s)" x:Name="miRemove" />
 			<Separator />
-			<MenuItem Header="Rescrape game information" ToolTip="Reinitiate the scrape process and choose which result to use"/>
-			<MenuItem Header="View Save States" ToolTip="View and manage save states for the selected game" />
+			<MenuItem Header="Rescrape game information" ToolTip="Reinitiate the scrape process and choose which result to use" x:Name="miRescrape"/>
+			<MenuItem Header="View Save States" ToolTip="View and manage save states for the selected game" x:Name="miSaveStates" />
 			<MenuItem Header="Manage Custom Configuration" ToolTip="Manage the custom settings to be applied when launching the selected game" />
 			<MenuItem Header="Get Game Manual" ToolTip="Visit replacementdocs.com to view game manuals" />
 			<MenuItem Header="View Screenshots" />
@@ -18,7 +18,7 @@
 			<MenuItem Header="Assign Memory Card" ToolTip="Set the default memory card to use when launching the selected game" />
 			<MenuItem Header="Assign PCSX2 Version" ToolTip="Set the PCSX2 executable to use when launching this game" />
 			<MenuItem Header="Generate Executable" ToolTip="Generate a stand alone executable with the desired options to launch the selected game" />
-			<MenuItem Header="Check for Wide Screen Patch" ToolTip="Check for any available widescreen patches" />
+			<MenuItem Header="Check for Wide Screen Patch" ToolTip="Check for any available widescreen patches" x:Name="miWideScreen" />
 			<MenuItem Header="Assign Shader File" />
 		</ContextMenu>
 	</Window.Resources>
@@ -50,11 +50,23 @@
 			</MenuItem>
 		</Menu>
 		<WrapPanel HorizontalAlignment="Right" Width="84" Height="21" VerticalAlignment="Top">
-			<legacy:ImageButton x:Name="btnStacked" />
-			<legacy:ImageButton x:Name="btnTile" />
-			<legacy:ImageButton x:Name="btnTV" />
+			<ToggleButton x:Name="btnStacked">
+				<ToggleButton.Content>
+					<Image Source="pack://siteoforigin:,,,/Resources/1.png" />
+				</ToggleButton.Content>
+			</ToggleButton>
+			<ToggleButton x:Name="btnTile">
+				<ToggleButton.Content>
+					<Image Source="pack://siteoforigin:,,,/Resources/1.png" />
+				</ToggleButton.Content>
+			</ToggleButton>
+			<ToggleButton x:Name="btnTV">
+				<ToggleButton.Content>
+					<Image Source="pack://siteoforigin:,,,/Resources/1.png" />
+				</ToggleButton.Content>
+			</ToggleButton>
 		</WrapPanel>
 		<TextBox x:Name="tbSearch" Text="Search" Height="29" VerticalAlignment="Top" HorizontalAlignment="Left" Width="116" Margin="10,26,0,0" ></TextBox>
-		<ListView x:Name="lvGames" Margin="0,60,0,0" ContextMenu="{StaticResource lvGamesListCtxMenu}" />
+		<ListView x:Name="lvGames" Margin="0,60,0,0" ContextMenu="{StaticResource lvGamesListCtxMenu}"  ItemsSource="{Binding Source={x:Static legacy:Game.AllGames}}" />
 	</Grid>
 </Window>

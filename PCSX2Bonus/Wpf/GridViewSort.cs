@@ -6,6 +6,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using Enumerable = System.Linq.Enumerable;
 
 namespace PCSX2Bonus.Wpf {
 	public sealed class GridViewSort {
@@ -98,7 +99,7 @@ namespace PCSX2Bonus.Wpf {
 
 		public static T GetAncestor<T>(DependencyObject reference) where T : DependencyObject {
 			var parent = VisualTreeHelper.GetParent(reference);
-			while (!(parent is T))
+			while (parent is T == false)
 				parent = VisualTreeHelper.GetParent(parent);
 			return (T)parent;
 		}
@@ -133,16 +134,13 @@ namespace PCSX2Bonus.Wpf {
 
 		private static void RemoveSortGlyph(GridViewColumnHeader columnHeader) {
 			var adornerLayer = AdornerLayer.GetAdornerLayer(columnHeader);
-			if (adornerLayer != null) {
-				var adorners = adornerLayer.GetAdorners(columnHeader);
-				if (adorners != null) {
-					foreach (var adorner in adorners) {
-						if (adorner is SortGlyphAdorner) {
-							adornerLayer.Remove(adorner);
-						}
-					}
-				}
-			}
+			if (adornerLayer == null) return;
+
+			var adorners = adornerLayer.GetAdorners(columnHeader);
+			if (adorners == null) return;
+
+			foreach (var adorner in Enumerable.OfType<SortGlyphAdorner>(adorners))
+				adornerLayer.Remove(adorner);
 		}
 
 		public static void SetAutoSort(DependencyObject obj, bool value) {

@@ -9,9 +9,12 @@ namespace PCSX2Bonus.Views {
 	public sealed partial class wndErrorReport {
 		private bool _sendingReport;
 
-		public wndErrorReport() {
+		public wndErrorReport(Exception exceptionObject, Window owner) {
 			InitializeComponent();
+			Message = exceptionObject.Message;
+			StackTrace = exceptionObject.StackTrace;
 			Closing += wndErrorReport_Closing;
+			Owner = owner;
 		}
 
 		private void btnOk_Click(object sender, RoutedEventArgs e) {

@@ -27,9 +27,6 @@ namespace PCSX2Bonus.Views {
 			InitializeComponent();
 			Loaded += MainWindow_Loaded;
 			CheckSettings();
-
-			return;
-			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 		}
 
 		private static void AddDummies() {
@@ -37,21 +34,20 @@ namespace PCSX2Bonus.Views {
 			for (var i = num; i < (num + 100); i++) {
 				var result = 0;
 				var str = Legacy.GameManager.GameDatabase[i];
-				var source = str.Trim().Split(new[] { '\n' });
+				var source = str.Trim().Split('\n');
 				var str2 = source.FirstOrDefault(s => s.Contains("Compat"));
-				if (!string.IsNullOrWhiteSpace(str2)) {
+				if (string.IsNullOrWhiteSpace(str2) == false)
 					result = int.TryParse(str2.Replace("Compat = ", ""), out result) ? result : 0;
-				}
 				var g = new Legacy.Game {
 					Serial = source[0],
-					Title = source[1],
+					Title  = source[1],
 					Region = source[2],
 					Description = "n/a*",
 					Location = "",
 					ImagePath = "",
 					Compatibility = result
 				};
-				if (!Legacy.Game.AllGames.Any(game => (game.Serial == g.Serial)))
+				if (Legacy.Game.AllGames.All(game => game.Serial != g.Serial))
 					Legacy.GameManager.AddToLibrary(g);
 			}
 		}
@@ -77,7 +73,7 @@ namespace PCSX2Bonus.Views {
 			Top = Settings.Default.windowLocation.Y;
 		}
 
-		private void CheckSettings() {
+		private static void CheckSettings() {
 			if ((!Extensions.IsEmpty(Settings.Default.pcsx2Dir) && !Extensions.IsEmpty(Settings.Default.pcsx2DataDir)) &&
 				(Directory.Exists(Settings.Default.pcsx2Dir) && Directory.Exists(Settings.Default.pcsx2DataDir))) return;
 			Legacy.Tools.ShowMessage("Please select the directory containing PCSX2 and the PCSX2 data directory", Legacy.MessageType.Info);
@@ -97,15 +93,6 @@ namespace PCSX2Bonus.Views {
 			((object)null).ToString();
 		}
 
-		private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) {
-			var exceptionObject = (Exception)e.ExceptionObject;
-			new wndErrorReport{
-				Message = exceptionObject.Message,
-				StackTrace = exceptionObject.StackTrace,
-				Owner = this
-			}.ShowDialog();
-		}
-
 		private void DeleteSaveStates() {
 			if (lvSaveStates.SelectedItems.Count == 0) return;
 			var list = lvSaveStates.ItemsSource.Cast<Legacy.SaveState>().ToList<Legacy.SaveState>();
@@ -118,7 +105,7 @@ namespace PCSX2Bonus.Views {
 
 		private void Filter(object sender, EventArgs e) {
 			_t.Stop();
-			if (!lvGames.IsVisible) return;
+			if (lvGames.IsVisible == false) return;
 			var query = tbSearch.Text;
 			var defaultView = CollectionViewSource.GetDefaultView(Legacy.Game.AllGames);
 			if (Extensions.IsEmpty(query) || query == "Search")
@@ -149,48 +136,43 @@ namespace PCSX2Bonus.Views {
 		}
 
 		public void LaunchGame(Legacy.Game g, bool tvMode = false) {
-			Process p;
-			DateTime timeOpened;
-			if (!File.Exists(g.Location)) {
+			if (File.Exists(g.Location) == false) {
 				Legacy.Tools.ShowMessage("Unable to find image file!", Legacy.MessageType.Error);
-				if (tvMode) {
-					var window = System.Windows.Application.Current.Windows.Cast<Window>().FirstOrDefault<Window>(w => w.Title == "wndFullScreen");
-					if (window != null) {
-						window.ShowDialog();
-					}
-				}
+				if (tvMode == false) return;
+				var window = System.Windows.Application.Current.Windows.Cast<Window>().FirstOrDefault(w => w.Title == "wndFullScreen");
+				if (window != null)
+					window.ShowDialog();
 			}
 			else {
-				p = new Process();
+				var pcsxProcess = new Process();
 				var path = Legacy.UserSettings.RootDir + string.Format(@"\Configs\{0}", g.FileSafeTitle);
 				var str = Directory.Exists(path) ? string.Format(" --cfgpath={0}{2}{0} {0}{1}{0}", "\"", g.Location, path) : string.Format(" {0}{1}{0}", "\"", g.Location);
 				str = str.Replace(@"\\", @"\");
 				var src = string.Empty;
 				var str4 = Settings.Default.pcsx2Dir;
-				if (File.Exists(path + @"\PCSX2Bonus.ini")) {
+				if (File.Exists(path + @"\PCSX2Bonus.ini")){
 					var file = new Legacy.IniFile(path + @"\PCSX2Bonus.ini");
 					var str5 = file.Read("Additional Executables", "Default");
-					var str6 = !Extensions.IsEmpty(str5) ? str5 : Settings.Default.pcsx2Exe;
-					str4 = !Extensions.IsEmpty(str5) ? Path.GetDirectoryName(str5) : Settings.Default.pcsx2Dir;
+					var str6 = Extensions.IsEmpty(str5) ? Settings.Default.pcsx2Exe : str5;
+					str4 = Extensions.IsEmpty(str5) ? Settings.Default.pcsx2Dir : Path.GetDirectoryName(str5);
 					var str7 = file.Read("Boot", "NoGUI");
 					var str8 = file.Read("Boot", "UseCD");
 					var str9 = file.Read("Boot", "NoHacks");
 					var str10 = file.Read("Boot", "FullBoot");
 					src = file.Read("Shader", "Default");
-					p.StartInfo.FileName = str6;
+					pcsxProcess.StartInfo.FileName = str6;
 					if (str7 == "true") str = str.Insert(0, " --nogui");
 					if (str8 == "true") str = str.Insert(0, " --usecd");
 					if (str9 == "true") str = str.Insert(0, " --nohacks");
 					if (str10 == "true") str = str.Insert(0, " --fullboot");
 				}
-				else {
-					p.StartInfo.FileName = Settings.Default.pcsx2Exe;
-				}
-				p.EnableRaisingEvents = true;
+				else
+					pcsxProcess.StartInfo.FileName = Settings.Default.pcsx2Exe;
+				pcsxProcess.EnableRaisingEvents = true;
 				if (str4 != null) {
-					p.StartInfo.WorkingDirectory = str4;
-					p.StartInfo.Arguments = str;
-					if (!Extensions.IsEmpty(src)) {
+					pcsxProcess.StartInfo.WorkingDirectory = str4;
+					pcsxProcess.StartInfo.Arguments = str;
+					if (Extensions.IsEmpty(src) == false) {
 						try {
 							File.Copy(src, Path.Combine(str4, "shader.fx"), true);
 						}
@@ -199,10 +181,9 @@ namespace PCSX2Bonus.Views {
 						}
 					}
 				}
-				timeOpened = DateTime.Now;
-				p.Exited += delegate {
-					if (p != null)
-						p.Dispose();
+				var timeOpened = DateTime.Now;
+				pcsxProcess.Exited += delegate{
+					pcsxProcess.Dispose();
 					System.Windows.Application.Current.Dispatcher.Invoke(delegate {
 						var now = DateTime.Now;
 						g.TimePlayed = g.TimePlayed.Add(now.Subtract(timeOpened));
@@ -225,12 +206,11 @@ namespace PCSX2Bonus.Views {
 					});
 				};
 				Hide();
-				if (Settings.Default.enableGameToast) {
-					new wndGameNotify { Tag = g }.Show();
-				}
+				if (Settings.Default.enableGameToast)
+					new wndGameNotify{Tag = g}.Show();
 				_notifyIcon.Text = string.Format("Currently playing [{0}]", Extensions.Truncate(g.Title, 40));
 				_notifyIcon.Visible = true;
-				p.Start();
+				pcsxProcess.Start();
 			}
 		}
 
@@ -343,11 +323,11 @@ namespace PCSX2Bonus.Views {
 			lvGames.SelectionChanged += lvGames_SelectionChanged;
 			var contextMenu = lvGames.ContextMenu;
 			NameScope.SetNameScope(contextMenu, NameScope.GetNameScope(this));
-			var miRemove = (System.Windows.Controls.MenuItem) contextMenu.Items[1];
-			var miRescrape = (System.Windows.Controls.MenuItem) contextMenu.Items[3];
-			var miSaveStates = (System.Windows.Controls.MenuItem) contextMenu.Items[4];
+			var miPlay		 = (System.Windows.Controls.MenuItem) contextMenu.Items[ 0];
+			var miRemove	 = (System.Windows.Controls.MenuItem) contextMenu.Items[ 1];
+			var miRescrape   = (System.Windows.Controls.MenuItem) contextMenu.Items[ 3];
+			var miSaveStates = (System.Windows.Controls.MenuItem) contextMenu.Items[ 4];
 			var miWideScreen = (System.Windows.Controls.MenuItem) contextMenu.Items[13];
-			var miPlay = (System.Windows.Controls.MenuItem) contextMenu.Items[0];
 			miRescrape.Click += miRescrape_Click;
 			lvGames.ContextMenuOpening += lvGames_ContextMenuOpening;
 			miRemoveStates.Click += (o, e) => DeleteSaveStates();
@@ -357,11 +337,12 @@ namespace PCSX2Bonus.Views {
 				var files = (
 					from s in data
 					let extension = Path.GetExtension(s)
-					where
-						Legacy.GameData.AcceptableFormats.Any(
-							frm => extension != null && extension.Equals(frm, StringComparison.InvariantCultureIgnoreCase))
+					where Legacy.GameData.AcceptableFormats.Any(frm =>
+						extension != null
+						&& extension.Equals(frm, StringComparison.InvariantCultureIgnoreCase)
+					)
 					select s
-					).ToArray();
+				).ToArray();
 				await Legacy.GameManager.AddGamesFromImages(files);
 			};
 			miPlay.Click += delegate{
@@ -401,13 +382,13 @@ namespace PCSX2Bonus.Views {
 				ClearViewStates(btnTile);
 				SwitchView("tileView");
 			};
-			btnTV.Click += (o, e) => SwitchView("tv");
-			lvGames.MouseDown += delegate(object o, MouseButtonEventArgs e){
+			btnTV.Click += delegate { SwitchView("tv"); };
+			lvGames.MouseDown += (o, e) =>{
 				if (e.LeftButton == MouseButtonState.Pressed)
 					lvGames.UnselectAll();
 			};
 			PreviewKeyDown += MainWindow_PreviewKeyDown;
-			lvGames.MouseDown += delegate(object o, MouseButtonEventArgs e){
+			lvGames.MouseDown += (o, e) =>{
 				if (e.MiddleButton == MouseButtonState.Pressed)
 					lvGames.UnselectAll();
 			};
@@ -425,7 +406,7 @@ namespace PCSX2Bonus.Views {
 					tbSearch.Text = "Search";
 			};
 			tbSearch.TextChanged += tbSearch_TextChanged;
-			tbSearch.KeyDown += delegate(object o, System.Windows.Input.KeyEventArgs e){
+			tbSearch.KeyDown += (o, e) =>{
 				if (e.Key != Key.Escape) return;
 				tbSearch.Text = "Search";
 				lvGames.Focus();
@@ -456,7 +437,7 @@ namespace PCSX2Bonus.Views {
 			}
 			var defaultSort = Settings.Default.defaultSort;
 			if (defaultSort == null) return;
-			if (defaultSort != "Alphabetical"){
+			if (defaultSort != "Alphabetical")
 				switch (defaultSort){
 					case "Serial":
 						ApplySort("Serial", ListSortDirection.Ascending);
@@ -464,10 +445,8 @@ namespace PCSX2Bonus.Views {
 					case "Default":
 						break;
 				}
-			}
-			else{
+			else
 				ApplySort("Title", ListSortDirection.Ascending);
-			}
 		}
 
 		private void SetupNotifyIcon() {
@@ -476,65 +455,61 @@ namespace PCSX2Bonus.Views {
 
 		private async void ShowSaveStates() {
 			var selectedItem = (Legacy.Game)lvGames.SelectedItem;
-			if (selectedItem != null) {
-				var states = Legacy.GameManager.FetchSaveStates(selectedItem);
-				if (states.Count != 0) {
-					lvSaveStates.Visibility = Visibility.Visible;
-					lvSaveStates.ItemsSource = states;
-					lvSaveStates.IsHitTestVisible = true;
-					lvGames.UnselectAll();
-					await SlideOut();
-				}
-				else {
-					Legacy.Toaster.Instance.ShowToast("No save states found", 0x9c4);
-				}
+			if (selectedItem == null) return;
+			var states = Legacy.GameManager.FetchSaveStates(selectedItem);
+			if (states.Count != 0){
+				lvSaveStates.Visibility = Visibility.Visible;
+				lvSaveStates.ItemsSource = states;
+				lvSaveStates.IsHitTestVisible = true;
+				lvGames.UnselectAll();
+				await SlideOut();
 			}
+			else
+				Legacy.Toaster.Instance.ShowToast("No save states found", 0x9c4);
 		}
 
 		private async void ShowScrapeResults() {
 			lvScrape.ItemsSource = null;
 			var selectedItem = (Legacy.Game)lvGames.SelectedItem;
-			if (selectedItem != null) {
-				lvScrape.Visibility = Visibility.Visible;
-				lvScrape.IsHitTestVisible = true;
-				lvGames.UnselectAll();
-				lvGames.IsHitTestVisible = false;
-				Legacy.Toaster.Instance.ShowToast("Fetching results for: " + selectedItem.Title);
-				var results = await Legacy.GameManager.FetchSearchResults(selectedItem);
-				if (results.Count == 0) {
-					HideRescrape();
-					Legacy.Toaster.Instance.ShowToast("Error fetching results", 0x9c4);
-				}
-				else {
-					lvScrape.ItemsSource = results;
-					lvScrape.Items.SortDescriptions.Clear();
-					lvScrape.Items.SortDescriptions.Add(new SortDescription("Rating", ListSortDirection.Ascending));
-					Console.WriteLine(lvScrape.Items.Count);
-					await SlideOut();
-					Legacy.Toaster.Instance.HideToast();
-				}
+			if (selectedItem == null) return;
+			lvScrape.Visibility = Visibility.Visible;
+			lvScrape.IsHitTestVisible = true;
+			lvGames.UnselectAll();
+			lvGames.IsHitTestVisible = false;
+			Legacy.Toaster.Instance.ShowToast("Fetching results for: " + selectedItem.Title);
+			var results = await Legacy.GameManager.FetchSearchResults(selectedItem);
+			if (results.Count == 0) {
+				HideRescrape();
+				Legacy.Toaster.Instance.ShowToast("Error fetching results", 0x9c4);
+			}
+			else {
+				lvScrape.ItemsSource = results;
+				lvScrape.Items.SortDescriptions.Clear();
+				lvScrape.Items.SortDescriptions.Add(new SortDescription("Rating", ListSortDirection.Ascending));
+				Console.WriteLine(lvScrape.Items.Count);
+				await SlideOut();
+				Legacy.Toaster.Instance.HideToast();
 			}
 		}
 
 		private async void ShowWideScreenResults() {
 			var selectedItem = (Legacy.Game)lvGames.SelectedItem;
-			if (selectedItem != null) {
-				rtbResults.Document.Blocks.Clear();
-				lvGames.IsHitTestVisible = false;
-				Legacy.Toaster.Instance.ShowToast("Fetching wide screen patches");
-				var src = await Legacy.GameManager.FetchWideScreenPatches(selectedItem);
-				if (Extensions.IsEmpty(src)) {
-					Legacy.Toaster.Instance.ShowToast("No patches found", 0x5dc);
-					lvGames.IsHitTestVisible = true;
-				}
-				else {
-					rtbResults.AppendText(src);
-					gWideScreenResults.Visibility = Visibility.Visible;
-					gWideScreenResults.IsHitTestVisible = true;
-					lvGames.UnselectAll();
-					await SlideOut();
-					Legacy.Toaster.Instance.HideToast();
-				}
+			if (selectedItem == null) return;
+			rtbResults.Document.Blocks.Clear();
+			lvGames.IsHitTestVisible = false;
+			Legacy.Toaster.Instance.ShowToast("Fetching wide screen patches");
+			var src = await Legacy.GameManager.FetchWideScreenPatches(selectedItem);
+			if (Extensions.IsEmpty(src)) {
+				Legacy.Toaster.Instance.ShowToast("No patches found", 0x5dc);
+				lvGames.IsHitTestVisible = true;
+			}
+			else {
+				rtbResults.AppendText(src);
+				gWideScreenResults.Visibility = Visibility.Visible;
+				gWideScreenResults.IsHitTestVisible = true;
+				lvGames.UnselectAll();
+				await SlideOut();
+				Legacy.Toaster.Instance.HideToast();
 			}
 		}
 
@@ -568,7 +543,7 @@ namespace PCSX2Bonus.Views {
 			lvGames.Visibility = Visibility.Collapsed;
 		}
 
-		private void SwitchView(string view) {
+		private void SwitchView(string view){
 			if (lvGames.View == null) {
 				var base2 = System.Windows.Application.Current.Resources["gridView"] as ViewBase;
 				lvGames.View = base2;
@@ -646,4 +621,3 @@ namespace PCSX2Bonus.Views {
 		}
 	}
 }
-
