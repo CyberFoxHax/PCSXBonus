@@ -42,32 +42,30 @@ namespace PCSX2Bonus.Views {
 					var stopwatch = new Stopwatch();
 					stopwatch.Start();
 					var location = g.Location;
-					var newValue = cbNoHacks.IsChecked.Value ? "--nohacks" : string.Empty;
-					var str4 = cbNoGui.IsChecked.Value ? "--nogui" : string.Empty;
-					var str5 = cbNoDisc.IsChecked.Value ? "--nodisc" : string.Empty;
-					var str6 = cbFullBoot.IsChecked.Value ? "--fullboot" : string.Empty;
-					var str7 = cbUseDefault.IsChecked.Value
-						? ("--cfgpath=\"\"" + Legacy.UserSettings.ConfigDir + @"\" + g.FileSafeTitle + "\"\"")
+					var newValue = cbNoHacks.IsChecked == true ? "--nohacks" : string.Empty;
+					var str4 = cbNoGui.IsChecked == true ? "--nogui" : string.Empty;
+					var str5 = cbNoDisc.IsChecked == true ? "--nodisc" : string.Empty;
+					var str6 = cbFullBoot.IsChecked == true ? "--fullboot" : string.Empty;
+					var str7 = cbUseDefault.IsChecked == true
+						? "--cfgpath=\"\"" + Legacy.UserSettings.ConfigDir + @"\" + g.FileSafeTitle + "\"\""
 						: string.Empty;
 					var outputName = tbOutputPath.Text + @"\" + g.FileSafeTitle + ".exe";
-					var providerOptions = new Dictionary<string, string>();
-					providerOptions.Add("CompilerVersion", "v4.0");
+					var providerOptions = new Dictionary<string, string>{{"CompilerVersion", "v4.0"}};
 					var provider = new CSharpCodeProvider(providerOptions);
-					var options = new CompilerParameters(new string[] { "mscorlib.dll", "System.Core.dll" }, outputName, true) {
+					var options = new CompilerParameters(new[] { "mscorlib.dll", "System.Core.dll" }, outputName, true) {
 						GenerateExecutable = true
 					};
 					if (cbUseDefaultIcon.IsChecked != null && cbUseDefaultIcon.IsChecked.Value) {
 						path = Legacy.UserSettings.ImageDir + @"\" + g.FileSafeTitle + ".ico";
-						CreateIcon(path, true);
+						CreateIcon(path);
 						options.CompilerOptions = string.Format("/target:winexe /optimize /win32icon:{1}{0}{1}", path, "\"");
 					}
-					else if (!cbUseDefault.IsChecked.Value) {
+					else if (!cbUseDefault.IsChecked == true) {
 						path = tbIconPath.Text;
 						options.CompilerOptions = string.Format("/target:winexe /optimize /win32icon:{1}{0}{1}", path, "\"");
 					}
-					if (string.IsNullOrWhiteSpace(path)) {
-						options.CompilerOptions = string.Format("/target:winexe /optimize", new object[0]);
-					}
+					if (string.IsNullOrWhiteSpace(path))
+						options.CompilerOptions = "/target:winexe /optimize";
 					options.ReferencedAssemblies.Add("System.dll");
 					options.IncludeDebugInformation = false;
 					var str9 = Settings.Default.pcsx2Exe;
@@ -75,9 +73,6 @@ namespace PCSX2Bonus.Views {
 					if (!string.IsNullOrWhiteSpace(file.Read("Additional Executables", "Default"))) {
 						str9 = file.Read("Additional Executables", "Default");
 					}
-					var process = new Process {
-						StartInfo = { WorkingDirectory = "" }
-					};
 					var directoryName = Path.GetDirectoryName(str9);
 					var str11 =
 						Properties.Resources.executableTemplate.Replace("{1}", str9)
@@ -89,20 +84,21 @@ namespace PCSX2Bonus.Views {
 							.Replace("{7}", "\"\"")
 							.Replace("{8}", str7)
 							.Replace("{9}", directoryName);
-					provider.CompileAssemblyFromSource(options, new string[] { str11 })
+					provider.CompileAssemblyFromSource(options, str11)
 						.Errors.Cast<CompilerError>()
-						.ToList<CompilerError>()
+						.ToList()
 						.ForEach(error => Console.WriteLine(error.ErrorText));
 					stopwatch.Stop();
 					System.Windows.MessageBox.Show(
-						string.Concat(new object[] { "Successfully compiled the executable at ", outputName, "\n[", stopwatch.ElapsedMilliseconds, "ms]" }),
+						string.Concat("Successfully compiled the executable at ", outputName, "\n[", stopwatch.ElapsedMilliseconds, "ms]"),
 						"PCSX2Bonus", MessageBoxButton.OK, MessageBoxImage.Asterisk);
 				}
 				catch (Exception exception) {
 					Legacy.Tools.ShowMessage("There was an error building the executable.\nReason: " + exception.Message,
 						Legacy.MessageType.Error);
 				}
-				if (File.Exists(path) && Path.GetDirectoryName(path).Contains("PCSX2Bonus"))
+				var name = Path.GetDirectoryName(path);
+				if (name != null && File.Exists(path) && name.Contains("PCSX2Bonus"))
 					File.Delete(path);
 			}
 		}
